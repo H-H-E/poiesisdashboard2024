@@ -15,6 +15,7 @@ const userFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
   role: z.enum(["admin", "student", "parent"]),
+  password: z.string().min(6, "Password must be at least 6 characters").optional(),
 })
 
 export type UserFormValues = z.infer<typeof userFormSchema>
@@ -35,13 +36,15 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
       email: "",
       phone: "",
       role: "student",
+      password: "",
     },
   })
 
   const onSubmit = async (data: UserFormValues) => {
     try {
       if (user) {
-        const { error } = await supabase
+        // Update existing user
+        const { error: profileError } = await supabase
           .from("user_profiles")
           .update({
             first_name: data.first_name,
@@ -52,10 +55,20 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           })
           .eq("id", user.id)
 
-        if (error) throw error
+        if (profileError) throw profileError
+
+        // Update password if provided
+        if (data.password) {
+          const { error: passwordError } = await supabase.auth.admin.updateUserById(
+            user.id,
+            { password: data.password }
+          )
+          if (passwordError) throw passwordError
+        }
+
         toast({ title: "User updated successfully" })
       } else {
-        // First check if user exists
+        // Check if user exists
         const { data: existingUser } = await supabase
           .from("user_profiles")
           .select("id")
@@ -71,15 +84,14 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           return
         }
 
-        // Create new user in Auth
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        // Create new user with password
+        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
           email: data.email,
-          password: "temporary-password", // In production, implement proper password handling
-          options: {
-            data: {
-              first_name: data.first_name,
-              last_name: data.last_name,
-            },
+          password: data.password || "temporary-password",
+          email_confirm: true,
+          user_metadata: {
+            first_name: data.first_name,
+            last_name: data.last_name,
           },
         })
 
