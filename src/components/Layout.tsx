@@ -1,6 +1,9 @@
+"use client"
+
 import { useAuth } from "@/contexts/AuthContext"
 import { cn } from "@/lib/utils"
 import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, Settings, User, Users } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
@@ -8,16 +11,9 @@ import { ThemeToggle } from "./ThemeToggle"
 import { ScrollArea } from "./ui/scroll-area"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
 import { Badge } from "./ui/badge"
+import { supabase } from "@/integrations/supabase/client"
 
-interface NavItem {
-  title: string
-  href: string
-  icon: any
-  subItems?: { title: string; href: string }[]
-  adminOnly?: boolean
-}
-
-const sidebarNavItems: NavItem[] = [
+const sidebarNavItems = [
   {
     title: "Dashboard",
     href: "/",
@@ -66,7 +62,23 @@ function SidebarContent() {
   const pathname = location.pathname
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const isAdmin = user?.user_metadata?.user_type === 'admin'
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    async function checkUserType() {
+      if (!user?.id) return
+      
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('user_type')
+        .eq('id', user.id)
+        .single()
+
+      setIsAdmin(profile?.user_type === 'admin')
+    }
+
+    checkUserType()
+  }, [user?.id])
 
   const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
 
@@ -75,8 +87,8 @@ function SidebarContent() {
     navigate('/login')
   }
 
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
+  const getRoleBadgeVariant = (userType?: string) => {
+    switch (userType) {
       case 'admin':
         return 'default'
       case 'student':

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { UserList } from "@/components/users/UserList"
 import { UserForm } from "@/components/users/UserForm"
 import { Button } from "@/components/ui/button"
@@ -13,14 +13,29 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Profile } from "@/types"
+import { supabase } from "@/integrations/supabase/client"
 
 export default function Users() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<Profile | undefined>()
+  const [isAdmin, setIsAdmin] = useState(false)
   const { user } = useAuth()
   
-  // Update the admin check to use user_type
-  const isAdmin = user?.user_metadata?.user_type === 'admin'
+  useEffect(() => {
+    async function checkUserType() {
+      if (!user?.id) return
+      
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('user_type')
+        .eq('id', user.id)
+        .single()
+
+      setIsAdmin(profile?.user_type === 'admin')
+    }
+
+    checkUserType()
+  }, [user?.id])
 
   // Redirect non-admin users to dashboard
   if (!isAdmin) {
