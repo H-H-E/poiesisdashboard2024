@@ -19,7 +19,7 @@ export function Header({ userRole, onLogout }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const getNavItems = (role: string) => {
-    const items = [{ title: "Dashboard", href: "/" }];
+    const items: { title: string; href: string }[] = [];
 
     switch (role) {
       case "admin":
