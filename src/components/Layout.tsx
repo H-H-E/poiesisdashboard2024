@@ -1,11 +1,24 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, SidebarProvider } from "@/components/ui/sidebar"
-import { ThemeToggle } from "./ThemeToggle"
 import { useAuth } from "@/contexts/AuthContext"
 import { cn } from "@/lib/utils"
 import { ChevronDown, ChevronUp, Home, LayoutDashboard, Settings, User, Users } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { ThemeToggle } from "./ThemeToggle"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
+  SidebarProvider,
+  MobileSidebar,
+} from "@/components/ui/sidebar"
 
 const sidebarNavItems = [
   {
@@ -58,7 +71,8 @@ export function Layout({ children, className }: LayoutProps) {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen bg-background">
-        <Sidebar className="border-r" collapsible="icon">
+        <MobileSidebar className="md:hidden" />
+        <Sidebar className="border-r hidden md:block" collapsible="icon">
           <SidebarHeader>
             <SidebarMenu>
               <SidebarMenuItem>
