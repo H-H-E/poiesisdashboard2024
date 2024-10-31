@@ -43,7 +43,7 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
   const onSubmit = async (data: UserFormValues) => {
     try {
       if (user) {
-        // Update existing user
+        // Update existing user profile
         const { error: profileError } = await supabase
           .from("user_profiles")
           .update({
@@ -57,13 +57,17 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
 
         if (profileError) throw profileError
 
-        // Update password if provided
+        // For password updates, users should use the password reset functionality
         if (data.password) {
-          const { error: passwordError } = await supabase.auth.admin.updateUserById(
-            user.id,
-            { password: data.password }
+          const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+            data.email,
+            { redirectTo: `${window.location.origin}/reset-password` }
           )
-          if (passwordError) throw passwordError
+          if (resetError) throw resetError
+          toast({ 
+            title: "Password reset email sent",
+            description: "User will receive instructions to set a new password."
+          })
         }
 
         toast({ title: "User updated successfully" })
@@ -84,15 +88,16 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           return
         }
 
-        // Create new user with password
-        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        // Create new user
+        const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
           password: data.password || "temporary-password",
-          email_confirm: true,
-          user_metadata: {
-            first_name: data.first_name,
-            last_name: data.last_name,
-          },
+          options: {
+            data: {
+              first_name: data.first_name,
+              last_name: data.last_name,
+            },
+          }
         })
 
         if (authError) {
