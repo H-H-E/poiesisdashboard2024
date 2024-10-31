@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 import { ThemeToggle } from "./ThemeToggle"
 import { ScrollArea } from "./ui/scroll-area"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
+import { Badge } from "./ui/badge"
 
 interface NavItem {
   title: string
@@ -65,13 +66,26 @@ function SidebarContent() {
   const pathname = location.pathname
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const isAdmin = user?.user_type === 'admin'
+  const isAdmin = user?.user_metadata?.role === 'admin'
 
   const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
 
   const handleLogout = async () => {
     await signOut()
     navigate('/login')
+  }
+
+  const getRoleBadgeVariant = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'default'
+      case 'student':
+        return 'secondary'
+      case 'parent':
+        return 'outline'
+      default:
+        return 'secondary'
+    }
   }
 
   return (
@@ -132,10 +146,13 @@ function SidebarContent() {
       </ScrollArea>
       <div className="border-t p-6">
         <div className="flex flex-col gap-4">
-          <Button variant="ghost" className="justify-start gap-2">
+          <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span>{user?.email}</span>
-          </Button>
+            <span className="flex-1">{user?.email}</span>
+            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.role)}>
+              {user?.user_metadata?.role || 'student'}
+            </Badge>
+          </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button
