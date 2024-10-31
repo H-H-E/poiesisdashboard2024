@@ -8,6 +8,8 @@ const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_COLLAPSED = "4rem"
 const SIDEBAR_COOKIE_NAME = "sidebar-state"
 
+type CollapsibleType = "offcanvas" | "icon" | "none"
+
 interface SidebarContextValue {
   state: "expanded" | "collapsed"
   open: boolean
@@ -59,7 +61,7 @@ export function SidebarProvider({
       toggleSidebar,
     }),
     [open, openProp, onOpenChangeProp, openMobile, toggleSidebar]
-  )
+  ) as SidebarContextValue
 
   return (
     <SidebarContext.Provider value={value}>
@@ -93,11 +95,19 @@ const sidebarVariants = cva(
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "collapsed"
+  collapsible?: CollapsibleType
 }
 
-export function Sidebar({ className, variant, ...props }: SidebarProps) {
+export function Sidebar({ className, variant, collapsible = "none", ...props }: SidebarProps) {
   return (
-    <aside className={cn(sidebarVariants({ variant }), className)} {...props} />
+    <aside 
+      className={cn(
+        sidebarVariants({ variant }), 
+        collapsible === "icon" && "w-64 data-[state=collapsed]:w-16",
+        className
+      )} 
+      {...props} 
+    />
   )
 }
 
