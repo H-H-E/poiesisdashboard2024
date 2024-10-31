@@ -55,25 +55,23 @@ export function Header({ userRole, onLogout }: HeaderProps) {
     <header className="border-b">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <h1 className="text-xl font-bold">Poiesis</h1>
-            
-            {/* Desktop Navigation */}
-            <NavigationMenu className="hidden md:flex">
-              <NavigationMenuList>
-                {navItems.map((item) => (
-                  <NavigationMenuItem key={item.href}>
-                    <NavigationMenuLink
-                      href={item.href}
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      {item.title}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+          <h1 className="text-xl font-bold">Poiesis</h1>
+          
+          {/* Desktop Navigation */}
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              {navItems.map((item) => (
+                <NavigationMenuItem key={item.href}>
+                  <NavigationMenuLink
+                    href={item.href}
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    {item.title}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
 
           {/* Mobile Menu */}
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
