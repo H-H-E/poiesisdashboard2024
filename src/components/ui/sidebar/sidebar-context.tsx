@@ -1,15 +1,5 @@
 import * as React from "react"
-
-type CollapsibleType = "offcanvas" | "icon" | "none"
-
-interface SidebarContextValue {
-  state: "expanded" | "collapsed"
-  open: boolean
-  setOpen: (open: boolean) => void
-  openMobile: boolean
-  setOpenMobile: (open: boolean) => void
-  toggleSidebar: () => void
-}
+import { SidebarContextValue } from "./types"
 
 const SidebarContext = React.createContext<SidebarContextValue | undefined>(undefined)
 
