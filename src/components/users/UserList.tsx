@@ -13,7 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export function UserList() {
+interface UserListProps {
+  onEditUser?: (user: Profile) => void
+}
+
+export function UserList({ onEditUser }: UserListProps) {
   const [search, setSearch] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
 
@@ -33,7 +37,7 @@ export function UserList() {
   const filteredUsers = users?.filter((user) => {
     const matchesSearch =
       search === "" ||
-      `${user.first_name} ${user.last_name}`
+      `${user.first_name || ""} ${user.last_name || ""}`
         .toLowerCase()
         .includes(search.toLowerCase()) ||
       user.email?.toLowerCase().includes(search.toLowerCase())
@@ -83,7 +87,7 @@ export function UserList() {
               role={user.role}
               email={user.email || ""}
               phone={user.phone || ""}
-              onEdit={() => {}} // Will be implemented with UserForm
+              onEdit={() => onEditUser?.(user)}
             />
           ))}
         </div>

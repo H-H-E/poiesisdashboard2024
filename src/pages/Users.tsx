@@ -39,7 +39,7 @@ export default function Users() {
         </Dialog>
       </div>
 
-      <UserList />
+      <UserList onEditUser={setSelectedUser} />
 
       {selectedUser && (
         <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(undefined)}>
