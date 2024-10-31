@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { cn } from "@/lib/utils"
-import { ChevronDown, Home, LayoutDashboard, Menu, Settings, User, Users } from "lucide-react"
-import { Link, useLocation } from "react-router-dom"
+import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, Settings, User, Users } from "lucide-react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 import { ThemeToggle } from "./ThemeToggle"
@@ -54,7 +54,13 @@ interface LayoutProps {
 function SidebarContent() {
   const location = useLocation()
   const pathname = location.pathname
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/login')
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -118,7 +124,18 @@ function SidebarContent() {
             <User className="h-4 w-4" />
             <span>{user?.email}</span>
           </Button>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="h-9 w-9"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="sr-only">Log out</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
