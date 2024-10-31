@@ -26,18 +26,6 @@ export function UserList({ onEditUser }: UserListProps) {
   const { data: users, isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      // First, get all authenticated users
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers()
-      if (authError) {
-        toast({
-          title: "Error fetching users",
-          description: authError.message,
-          variant: "destructive",
-        })
-        throw authError
-      }
-
-      // Then get their profiles from user_profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("user_profiles")
         .select("*")
@@ -50,36 +38,6 @@ export function UserList({ onEditUser }: UserListProps) {
           variant: "destructive",
         })
         throw profilesError
-      }
-
-      // Create profiles for users that don't have them yet
-      const existingProfileIds = new Set(profiles?.map(p => p.id) || [])
-      const missingProfiles = authUsers.users.filter(user => !existingProfileIds.has(user.id))
-
-      if (missingProfiles.length > 0) {
-        const { error: insertError } = await supabase
-          .from("user_profiles")
-          .insert(missingProfiles.map(user => ({
-            id: user.id,
-            email: user.email,
-            user_type: "student", // default role
-          })))
-
-        if (insertError) {
-          toast({
-            title: "Error creating user profiles",
-            description: insertError.message,
-            variant: "destructive",
-          })
-        } else {
-          // Refetch profiles after creating new ones
-          const { data: updatedProfiles } = await supabase
-            .from("user_profiles")
-            .select("*")
-            .order("created_at", { ascending: false })
-          
-          return updatedProfiles as Profile[]
-        }
       }
 
       return profiles as Profile[]
