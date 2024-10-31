@@ -54,30 +54,69 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
   const onSubmit = async (data: UserFormValues) => {
     try {
       if (user) {
+        // Update existing user
         const { error } = await supabase
-          .from("profiles")
-          .update(data)
+          .from("user_profiles")
+          .update({
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            phone: data.phone,
+            user_type: data.role,
+          })
           .eq("id", user.id)
 
         if (error) throw error
         toast({ title: "User updated successfully" })
       } else {
-        // For new users, we'll need to create both auth user and profile
-        // This should be handled by the trigger we have in place
-        const { error: authError } = await supabase.auth.signUp({
+        // Create new user in Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
           password: "temporary-password", // In production, implement proper password handling
+          options: {
+            data: {
+              first_name: data.first_name,
+              last_name: data.last_name,
+            },
+          },
         })
 
         if (authError) throw authError
+
+        if (authData.user) {
+          // Create user profile
+          const { error: profileError } = await supabase
+            .from("user_profiles")
+            .insert({
+              id: authData.user.id,
+              first_name: data.first_name,
+              last_name: data.last_name,
+              email: data.email,
+              phone: data.phone,
+              user_type: data.role,
+            })
+
+          if (profileError) throw profileError
+
+          // Create role-specific entry
+          const roleTable = `${data.role}s` // students, parents, or admins
+          const { error: roleError } = await supabase
+            .from(roleTable)
+            .insert({
+              id: authData.user.id,
+            })
+
+          if (roleError) throw roleError
+        }
+
         toast({ title: "User created successfully" })
       }
 
       onSuccess?.()
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       })
     }
