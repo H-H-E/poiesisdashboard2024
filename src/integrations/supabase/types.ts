@@ -265,6 +265,7 @@ export type Database = {
           student_id: string | null
           title: string
           updated_at: string
+          work_url: string | null
         }
         Insert: {
           created_at?: string
@@ -276,6 +277,7 @@ export type Database = {
           student_id?: string | null
           title: string
           updated_at?: string
+          work_url?: string | null
         }
         Update: {
           created_at?: string
@@ -287,6 +289,7 @@ export type Database = {
           student_id?: string | null
           title?: string
           updated_at?: string
+          work_url?: string | null
         }
         Relationships: [
           {
