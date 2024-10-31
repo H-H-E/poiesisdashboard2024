@@ -5,6 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Slider } from "@/components/ui/slider"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
@@ -17,10 +18,11 @@ import { CalendarIcon } from "lucide-react"
 const plenaryFormSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   description: z.string().optional(),
+  work_url: z.string().url("Please enter a valid URL").optional(),
   session_date: z.date({
     required_error: "Session date is required",
   }),
-  points_awarded: z.number().min(0).max(100).optional(),
+  points_awarded: z.number().min(0).max(10),
   student_id: z.string().uuid().optional(),
   pathway_id: z.string().uuid().optional(),
 })
@@ -41,7 +43,8 @@ export function PlenaryForm({ onSuccess, onCancel }: PlenaryFormProps) {
     defaultValues: {
       title: "",
       description: "",
-      points_awarded: 0,
+      work_url: "",
+      points_awarded: 5,
     },
   })
 
@@ -52,6 +55,7 @@ export function PlenaryForm({ onSuccess, onCancel }: PlenaryFormProps) {
         .insert({
           title: data.title,
           description: data.description,
+          work_url: data.work_url,
           session_date: data.session_date.toISOString(),
           points_awarded: data.points_awarded,
           student_id: data.student_id,
@@ -96,6 +100,20 @@ export function PlenaryForm({ onSuccess, onCancel }: PlenaryFormProps) {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="work_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Work URL</FormLabel>
+              <FormControl>
+                <Input type="url" placeholder="https://..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -149,13 +167,19 @@ export function PlenaryForm({ onSuccess, onCancel }: PlenaryFormProps) {
           name="points_awarded"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Points Awarded</FormLabel>
+              <FormLabel>Points Awarded (0-10)</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
-                  {...field} 
-                  onChange={e => field.onChange(e.target.valueAsNumber)}
-                />
+                <div className="flex items-center gap-4">
+                  <Slider
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={[field.value]}
+                    onValueChange={([value]) => field.onChange(value)}
+                    className="w-[60%]"
+                  />
+                  <span className="w-12 text-center">{field.value}</span>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
