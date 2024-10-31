@@ -31,10 +31,10 @@ export function ParentDashboard() {
       const { data, error } = await supabase
         .from('parent_student_relations')
         .select(`
-          student:student_id (
+          student:students!inner (
             id,
             grade_level,
-            user_profiles (
+            user_profiles!inner (
               first_name,
               last_name
             )

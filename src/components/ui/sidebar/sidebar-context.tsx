@@ -41,7 +41,7 @@ export function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
-    }) as SidebarContextValue,
+    }),
     [open, openProp, onOpenChangeProp, openMobile, toggleSidebar]
   )
 
