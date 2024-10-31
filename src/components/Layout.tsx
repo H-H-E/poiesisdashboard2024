@@ -1,24 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { cn } from "@/lib/utils"
-import { ChevronDown, ChevronUp, Home, LayoutDashboard, Settings, User, Users } from "lucide-react"
+import { ChevronDown, Home, LayoutDashboard, Menu, Settings, User, Users } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { Button } from "./ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 import { ThemeToggle } from "./ThemeToggle"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
-  SidebarProvider,
-  MobileSidebar,
-} from "@/components/ui/sidebar"
+import { ScrollArea } from "./ui/scroll-area"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
 
 const sidebarNavItems = [
   {
@@ -63,92 +51,104 @@ interface LayoutProps {
   className?: string
 }
 
-export function Layout({ children, className }: LayoutProps) {
-  const { user } = useAuth()
+function SidebarContent() {
   const location = useLocation()
   const pathname = location.pathname
+  const { user } = useAuth()
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen bg-background">
-        <MobileSidebar className="md:hidden" />
-        <Sidebar className="border-r hidden md:block" collapsible="icon">
-          <SidebarHeader>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  Poiesis
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-              {sidebarNavItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  {item.subItems ? (
-                    <Collapsible>
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton>
-                          <item.icon className="mr-2 h-4 w-4" />
-                          <span>{item.title}</span>
-                          <ChevronDown className="ml-auto h-4 w-4" />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.subItems.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.href}>
-                              <SidebarMenuSubButton
-                                asChild
-                                isActive={pathname === subItem.href}
-                              >
-                                <Link to={subItem.href}>{subItem.title}</Link>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ) : (
-                    <SidebarMenuButton asChild isActive={pathname === item.href}>
-                      <Link to={item.href}>
-                        <item.icon className="mr-2 h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>{user?.email}</span>
-                      <ChevronUp className="ml-auto h-4 w-4" />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" side="top" className="w-[--radix-dropdown-menu-trigger-width]">
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <ThemeToggle />
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
-        <main className={cn("flex-1 p-8", className)}>
-          {children}
-        </main>
+    <div className="flex h-full flex-col">
+      <div className="p-6">
+        <h2 className="text-lg font-semibold">Poiesis</h2>
       </div>
-    </SidebarProvider>
+      <ScrollArea className="flex-1 px-4">
+        <nav className="flex flex-col gap-2">
+          {sidebarNavItems.map((item) => (
+            <div key={item.href}>
+              {item.subItems ? (
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                      <ChevronDown className="ml-auto h-4 w-4" />
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="ml-4 mt-2 flex flex-col gap-2">
+                    {item.subItems.map((subItem) => (
+                      <Button
+                        key={subItem.href}
+                        variant="ghost"
+                        className={cn(
+                          "w-full justify-start",
+                          pathname === subItem.href && "bg-accent"
+                        )}
+                        asChild
+                      >
+                        <Link to={subItem.href}>{subItem.title}</Link>
+                      </Button>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    pathname === item.href && "bg-accent"
+                  )}
+                  asChild
+                >
+                  <Link to={item.href}>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.title}</span>
+                  </Link>
+                </Button>
+              )}
+            </div>
+          ))}
+        </nav>
+      </ScrollArea>
+      <div className="border-t p-6">
+        <div className="flex flex-col gap-4">
+          <Button variant="ghost" className="justify-start gap-2">
+            <User className="h-4 w-4" />
+            <span>{user?.email}</span>
+          </Button>
+          <ThemeToggle />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function Layout({ children, className }: LayoutProps) {
+  return (
+    <div className="flex min-h-screen bg-background">
+      {/* Mobile Sidebar */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-6 w-6" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[300px] p-0">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden w-[300px] border-r md:block">
+        <SidebarContent />
+      </aside>
+
+      <main className={cn("flex-1 p-8", className)}>
+        {children}
+      </main>
+    </div>
   )
 }
