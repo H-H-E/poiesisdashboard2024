@@ -7,9 +7,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface Student {
   id: string
-  first_name: string
-  last_name: string
-  grade_level: string
+  user_profiles: {
+    first_name: string | null
+    last_name: string | null
+  }
+  grade_level: string | null
 }
 
 interface Event {
@@ -31,11 +33,11 @@ export function ParentDashboard() {
         .select(`
           student:student_id (
             id,
+            grade_level,
             user_profiles (
               first_name,
               last_name
-            ),
-            grade_level
+            )
           )
         `)
         .eq('parent_id', user?.id)
@@ -87,7 +89,7 @@ export function ParentDashboard() {
                 <Card key={child.id}>
                   <CardHeader>
                     <CardTitle className="text-lg">
-                      {child.first_name} {child.last_name}
+                      {child.user_profiles.first_name} {child.user_profiles.last_name}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
