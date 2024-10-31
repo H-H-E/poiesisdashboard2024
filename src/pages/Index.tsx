@@ -1,13 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Layout } from "@/components/Layout";
+import { UserCard } from "@/components/UserCard";
 
 const Index = () => {
+  const handleLogout = () => {
+    // Implement logout logic here
+    console.log("Logging out...");
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <Layout userRole="admin" onLogout={handleLogout}>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <UserCard
+          name="John Doe"
+          role="admin"
+          email="john@example.com"
+          phone="+1 234 567 8900"
+        />
+        <UserCard
+          name="Jane Smith"
+          role="student"
+          email="jane@example.com"
+        />
+        <UserCard
+          name="Alice Johnson"
+          role="parent"
+          email="alice@example.com"
+          phone="+1 234 567 8901"
+        />
       </div>
-    </div>
+    </Layout>
   );
 };
 
