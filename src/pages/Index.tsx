@@ -1,14 +1,9 @@
-import { Layout } from "@/components/Layout";
-import { UserCard } from "@/components/UserCard";
+import { Layout } from "@/components/Layout"
+import { UserCard } from "@/components/UserCard"
 
 const Index = () => {
-  const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logging out...");
-  };
-
   return (
-    <Layout userRole="admin" onLogout={handleLogout}>
+    <Layout>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <UserCard
           name="John Doe"
@@ -29,7 +24,7 @@ const Index = () => {
         />
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index
