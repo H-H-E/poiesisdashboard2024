@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom"
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className }: SidebarProps) {
-  const { signOut } = useAuth()
+  const { signOut, user } = useAuth()
   const navigate = useNavigate()
+  const isAdmin = user?.user_metadata?.user_type === 'admin'
 
   const handleLogout = async () => {
     await signOut()
@@ -53,15 +54,17 @@ export function Sidebar({ className }: SidebarProps) {
             <GraduationCap className="h-4 w-4" />
             Projects
           </NavLink>
-          <NavLink to="/users" className={({ isActive }) => 
-            cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive ? "text-primary bg-accent" : "text-muted-foreground"
-            )
-          }>
-            <Users className="h-4 w-4" />
-            Users
-          </NavLink>
+          {isAdmin && (
+            <NavLink to="/users" className={({ isActive }) => 
+              cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+                isActive ? "text-primary bg-accent" : "text-muted-foreground"
+              )
+            }>
+              <Users className="h-4 w-4" />
+              Users
+            </NavLink>
+          )}
           <NavLink to="/points" className={({ isActive }) => 
             cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",

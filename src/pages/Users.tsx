@@ -3,6 +3,8 @@ import { UserList } from "@/components/users/UserList"
 import { UserForm } from "@/components/users/UserForm"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
+import { Navigate } from "react-router-dom"
 import {
   Dialog,
   DialogContent,
@@ -15,6 +17,15 @@ import { Profile } from "@/types"
 export default function Users() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<Profile | undefined>()
+  const { user } = useAuth()
+  
+  // Check if user is admin based on user metadata
+  const isAdmin = user?.user_metadata?.user_type === 'admin'
+
+  // Redirect non-admin users to dashboard
+  if (!isAdmin) {
+    return <Navigate to="/" replace />
+  }
 
   return (
     <div className="space-y-6">
