@@ -1,5 +1,6 @@
 import { Sidebar } from "./Sidebar"
 import { MobileNav } from "./MobileNav"
+import { ThemeToggle } from "./ThemeToggle"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -20,8 +21,9 @@ export function Layout({ children, className }: LayoutProps) {
         
         <div className="flex-1">
           {/* Mobile Navigation */}
-          <div className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:hidden">
+          <div className="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-background px-4 md:hidden">
             <MobileNav />
+            <ThemeToggle />
           </div>
           
           {/* Main Content */}
