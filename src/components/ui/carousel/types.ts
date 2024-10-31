@@ -1,9 +1,8 @@
-import type { UseEmblaCarouselType } from "embla-carousel-react"
+import type { EmblaOptionsType, EmblaPluginType, UseEmblaCarouselType } from "embla-carousel-react"
 
 export type CarouselApi = UseEmblaCarouselType[1]
-export type UseCarouselParameters = Parameters<typeof UseEmblaCarouselType>
-export type CarouselOptions = UseCarouselParameters[0]
-export type CarouselPlugin = UseCarouselParameters[1]
+export type CarouselOptions = EmblaOptionsType
+export type CarouselPlugin = EmblaPluginType
 
 export type CarouselProps = {
   opts?: CarouselOptions
@@ -13,7 +12,7 @@ export type CarouselProps = {
 }
 
 export type CarouselContextProps = {
-  carouselRef: ReturnType<typeof UseEmblaCarouselType>[0]
+  carouselRef: ReturnType<UseEmblaCarouselType>[0]
   api: CarouselApi
   scrollPrev: () => void
   scrollNext: () => void
