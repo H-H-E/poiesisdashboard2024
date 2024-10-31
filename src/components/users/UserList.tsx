@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useToast } from "@/components/ui/use-toast"
 
 interface UserListProps {
   onEditUser?: (user: Profile) => void
@@ -20,17 +21,68 @@ interface UserListProps {
 export function UserList({ onEditUser }: UserListProps) {
   const [search, setSearch] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
+  const { toast } = useToast()
 
   const { data: users, isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
+      // First, get all authenticated users
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers()
+      if (authError) {
+        toast({
+          title: "Error fetching users",
+          description: authError.message,
+          variant: "destructive",
+        })
+        throw authError
+      }
+
+      // Then get their profiles from user_profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from("user_profiles")
         .select("*")
         .order("created_at", { ascending: false })
 
-      if (error) throw error
-      return data as Profile[]
+      if (profilesError) {
+        toast({
+          title: "Error fetching user profiles",
+          description: profilesError.message,
+          variant: "destructive",
+        })
+        throw profilesError
+      }
+
+      // Create profiles for users that don't have them yet
+      const existingProfileIds = new Set(profiles?.map(p => p.id) || [])
+      const missingProfiles = authUsers.users.filter(user => !existingProfileIds.has(user.id))
+
+      if (missingProfiles.length > 0) {
+        const { error: insertError } = await supabase
+          .from("user_profiles")
+          .insert(missingProfiles.map(user => ({
+            id: user.id,
+            email: user.email,
+            user_type: "student", // default role
+          })))
+
+        if (insertError) {
+          toast({
+            title: "Error creating user profiles",
+            description: insertError.message,
+            variant: "destructive",
+          })
+        } else {
+          // Refetch profiles after creating new ones
+          const { data: updatedProfiles } = await supabase
+            .from("user_profiles")
+            .select("*")
+            .order("created_at", { ascending: false })
+          
+          return updatedProfiles as Profile[]
+        }
+      }
+
+      return profiles as Profile[]
     },
   })
 
@@ -42,7 +94,7 @@ export function UserList({ onEditUser }: UserListProps) {
         .includes(search.toLowerCase()) ||
       user.email?.toLowerCase().includes(search.toLowerCase())
 
-    const matchesRole = roleFilter === "all" || user.role === roleFilter
+    const matchesRole = roleFilter === "all" || user.user_type === roleFilter
 
     return matchesSearch && matchesRole
   })
@@ -84,7 +136,7 @@ export function UserList({ onEditUser }: UserListProps) {
             <UserCard
               key={user.id}
               name={`${user.first_name || ""} ${user.last_name || ""}`}
-              role={user.role}
+              role={user.user_type}
               email={user.email || ""}
               phone={user.phone || ""}
               onEdit={() => onEditUser?.(user)}

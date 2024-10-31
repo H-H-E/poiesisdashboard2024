@@ -1,6 +1,6 @@
 export interface Profile {
   id: string
-  role: "admin" | "student" | "parent"
+  user_type: "admin" | "student" | "parent"
   first_name: string | null
   last_name: string | null
   email: string | null
