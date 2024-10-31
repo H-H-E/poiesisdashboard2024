@@ -55,6 +55,23 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
         if (error) throw error
         toast({ title: "User updated successfully" })
       } else {
+        // First check if user exists
+        const { data: existingUser } = await supabase
+          .from("user_profiles")
+          .select("id")
+          .eq("email", data.email)
+          .single()
+
+        if (existingUser) {
+          toast({ 
+            title: "User already exists", 
+            description: "Please use a different email address.",
+            variant: "destructive"
+          })
+          return
+        }
+
+        // Create new user in Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
           password: "temporary-password", // In production, implement proper password handling
@@ -66,7 +83,17 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           },
         })
 
-        if (authError) throw authError
+        if (authError) {
+          if (authError.message.includes("already registered")) {
+            toast({ 
+              title: "User already exists", 
+              description: "Please use a different email address.",
+              variant: "destructive"
+            })
+            return
+          }
+          throw authError
+        }
 
         if (authData.user) {
           const { error: profileError } = await supabase
