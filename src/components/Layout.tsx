@@ -63,9 +63,10 @@ function SidebarContent() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [isAdmin, setIsAdmin] = useState(false)
+  const [userType, setUserType] = useState<string>('student')
 
   useEffect(() => {
-    async function checkUserType() {
+    async function fetchUserProfile() {
       if (!user?.id) return
       
       const { data: profile } = await supabase
@@ -74,10 +75,13 @@ function SidebarContent() {
         .eq('id', user.id)
         .single()
 
-      setIsAdmin(profile?.user_type === 'admin')
+      if (profile) {
+        setUserType(profile.user_type)
+        setIsAdmin(profile.user_type === 'admin')
+      }
     }
 
-    checkUserType()
+    fetchUserProfile()
   }, [user?.id])
 
   const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
@@ -161,8 +165,8 @@ function SidebarContent() {
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
             <span className="flex-1">{user?.email}</span>
-            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.user_type)}>
-              {user?.user_metadata?.user_type || 'student'}
+            <Badge variant={getRoleBadgeVariant(userType)}>
+              {userType}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
@@ -186,7 +190,6 @@ function SidebarContent() {
 export function Layout({ children, className }: LayoutProps) {
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Mobile Sidebar */}
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="md:hidden">
@@ -199,7 +202,6 @@ export function Layout({ children, className }: LayoutProps) {
         </SheetContent>
       </Sheet>
 
-      {/* Desktop Sidebar */}
       <aside className="hidden w-[300px] border-r md:block">
         <SidebarContent />
       </aside>
