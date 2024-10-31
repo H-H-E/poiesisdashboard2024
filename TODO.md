@@ -1,41 +1,49 @@
 # Implementation TODO List
 
-## Core User Management
+## Phase 1: Core Functionality
+
+### Authentication & User Management
 - [x] Basic authentication (login/logout)
 - [ ] Role-based access control implementation
 - [ ] User profile management
 - [ ] Parent-student relationship management
 - [ ] Admin user management interface
+- [ ] Email notifications system
 
-## Pathways
-- [ ] Pathway creation interface for admins
+### Pathways
 - [ ] Visual pathway timeline/flow diagram
+- [ ] Pathway creation interface for admins
 - [ ] Progress tracking within pathways
 - [ ] Educational standards integration
 - [ ] Pathway assignment to students
+- [ ] Collapsible pathway view
 
-## Plenaries
+### Plenaries
 - [ ] Plenary creation form
 - [ ] Link plenaries to pathways
 - [ ] Educational standards association
 - [ ] Session date tracking
 - [ ] Points award system integration
+- [ ] Plenary notes and feedback system
 
-## Projects
+### Projects
 - [ ] Project creation and management
 - [ ] Project to-do list functionality
 - [ ] Link projects to pathways
 - [ ] Progress tracking
 - [ ] Due date management
+- [ ] Project resources management
 
-## Poiesis Points
+### Poiesis Points
 - [ ] Points awarding system
 - [ ] Points history tracking
 - [ ] Visualization/graphs of points over time
 - [ ] Points notification system
 - [ ] Export/reporting functionality
+- [ ] Perseverance tracking metrics
 
-## Dashboard Views
+## Phase 2: Dashboard Views
+
 ### Admin Dashboard
 - [x] Basic layout
 - [ ] Student overview metrics
@@ -43,13 +51,15 @@
 - [ ] Event calendar integration
 - [ ] User management interface
 - [ ] Educational standards tracking
+- [ ] Batch operations for user management
 
 ### Student Dashboard
+- [ ] Today's tasks/to-dos widget
 - [ ] Personalized pathway view
-- [ ] Today's tasks/to-dos
 - [ ] Project progress tracking
 - [ ] Points visualization
 - [ ] Upcoming events display
+- [ ] Motivational elements
 
 ### Parent Dashboard
 - [ ] Child progress overview
@@ -57,20 +67,23 @@
 - [ ] Points history view
 - [ ] Event calendar view
 - [ ] Notification preferences
+- [ ] Detailed academic reports
 
-## Events
+## Phase 3: Events & Calendar
 - [ ] Event creation interface
 - [ ] Calendar view implementation
 - [ ] Event type management (online/in-person)
 - [ ] Event notifications
 - [ ] Attendance tracking
+- [ ] Session resource management
 
-## Data Management
+## Technical Implementation
 - [x] Basic Supabase integration
 - [ ] Data export functionality
 - [ ] Backup systems
 - [ ] Data archiving
 - [ ] Activity logging
+- [ ] API rate limiting
 
 ## UI/UX Improvements
 - [ ] Mobile responsiveness optimization
@@ -78,15 +91,9 @@
 - [ ] Loading states
 - [ ] Error handling
 - [ ] Form validations
-- [ ] Toast notifications for actions
-
-## Future Enhancements
-- [ ] Student admin roles
-- [ ] AI-powered standards association
-- [ ] Gamification elements
-- [ ] Advanced analytics
-- [ ] Parent communication system
-- [ ] Resource sharing functionality
+- [ ] Toast notifications
+- [ ] Dark mode support
+- [ ] Responsive navigation
 
 ## Testing
 - [ ] Unit tests
@@ -95,6 +102,16 @@
 - [ ] Performance testing
 - [ ] Security testing
 - [ ] Cross-browser testing
+- [ ] Mobile device testing
+
+## Future Enhancements
+- [ ] Student admin roles
+- [ ] AI-powered standards association
+- [ ] Gamification elements
+- [ ] Advanced analytics
+- [ ] Parent communication system
+- [ ] Resource sharing functionality
+- [ ] Progress report generation
 
 ## Documentation
 - [ ] User documentation
@@ -102,3 +119,4 @@
 - [ ] API documentation
 - [ ] Deployment guide
 - [ ] Contributing guidelines
+- [ ] Security guidelines
