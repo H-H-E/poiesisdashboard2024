@@ -8,7 +8,15 @@ import { ThemeToggle } from "./ThemeToggle"
 import { ScrollArea } from "./ui/scroll-area"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
 
-const sidebarNavItems = [
+interface NavItem {
+  title: string
+  href: string
+  icon: any
+  subItems?: { title: string; href: string }[]
+  adminOnly?: boolean
+}
+
+const sidebarNavItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/",
@@ -28,6 +36,7 @@ const sidebarNavItems = [
     title: "Users",
     href: "/users",
     icon: Users,
+    adminOnly: true,
     subItems: [
       {
         title: "All Users",
@@ -56,6 +65,9 @@ function SidebarContent() {
   const pathname = location.pathname
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const isAdmin = user?.user_metadata?.user_type === 'admin'
+
+  const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
 
   const handleLogout = async () => {
     await signOut()
@@ -69,7 +81,7 @@ function SidebarContent() {
       </div>
       <ScrollArea className="flex-1 px-4">
         <nav className="flex flex-col gap-2">
-          {sidebarNavItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <div key={item.href}>
               {item.subItems ? (
                 <Collapsible>
