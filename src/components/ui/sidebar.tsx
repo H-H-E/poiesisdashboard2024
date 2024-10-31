@@ -1,14 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { cva } from "class-variance-authority"
-import { ChevronRight } from "lucide-react"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
-const SIDEBAR_CONTENT_PADDING = "p-2"
+const SIDEBAR_CONTENT_PADDING = "p-4"
 
 interface SidebarContextValue {
   expanded: boolean
@@ -28,8 +27,8 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
-      setExpanded(window.innerWidth >= 1024)
+      setIsMobile(window.innerWidth < 768)
+      setExpanded(window.innerWidth >= 768)
     }
     checkMobile()
     window.addEventListener("resize", checkMobile)
@@ -48,6 +47,7 @@ export function Sidebar({ className, children }: React.HTMLAttributes<HTMLDivEle
 
   return (
     <aside
+      data-expanded={expanded}
       className={cn(
         "relative h-screen border-r bg-background transition-all duration-300",
         expanded ? "w-64" : "w-16",
@@ -89,22 +89,23 @@ export function SidebarTrigger({ className }: React.HTMLAttributes<HTMLButtonEle
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="icon"
       className={cn("shrink-0", className)}
       onClick={() => setExpanded(!expanded)}
     >
-      <ChevronRight className={cn(
-        "h-4 w-4 transition-transform",
-        expanded && "rotate-180"
-      )} />
+      {expanded ? (
+        <ChevronLeftIcon className="h-4 w-4" />
+      ) : (
+        <ChevronRightIcon className="h-4 w-4" />
+      )}
     </Button>
   )
 }
 
 export function SidebarMenu({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("space-y-1", className)}>
+    <div className={cn("space-y-2", className)}>
       {children}
     </div>
   )
@@ -118,35 +119,24 @@ export function SidebarMenuItem({ className, children }: React.HTMLAttributes<HT
   )
 }
 
-const sidebarMenuButtonVariants = cva(
-  "inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 w-full justify-start",
-  {
-    variants: {
-      variant: {
-        default: "",
-        ghost: "",
-      },
-    },
-    defaultVariants: {
-      variant: "ghost",
-    },
-  }
-)
-
 export interface SidebarMenuButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean
-  variant?: "default" | "ghost"
+  active?: boolean
 }
 
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, active, ...props }, ref) => {
     const { expanded } = React.useContext(SidebarContext)
 
     return (
       <button
         ref={ref}
-        className={cn(sidebarMenuButtonVariants({ variant }), 
+        data-active={active}
+        className={cn(
+          "inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "hover:bg-accent hover:text-accent-foreground h-9 px-3 w-full justify-start",
+          active && "bg-accent",
           !expanded && "justify-center px-2",
           className
         )}
