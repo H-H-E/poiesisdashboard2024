@@ -75,8 +75,10 @@ function SidebarContent() {
     navigate('/login')
   }
 
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
+  const getRoleBadgeVariant = (role?: string) => {
+    if (!role) return 'secondary'
+    
+    switch (role.toLowerCase()) {
       case 'admin':
         return 'default'
       case 'student':
@@ -148,9 +150,9 @@ function SidebarContent() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span className="flex-1">{user?.email}</span>
-            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.role)}>
-              {user?.user_metadata?.role || 'student'}
+            <span className="flex-1">{user?.email || 'Guest'}</span>
+            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.user_type)}>
+              {user?.user_metadata?.user_type || 'guest'}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
