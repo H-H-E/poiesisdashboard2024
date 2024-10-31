@@ -1,4 +1,3 @@
-// First, let's split out the SidebarContent into its own component
 import { useAuth } from "@/contexts/AuthContext"
 import { cn } from "@/lib/utils"
 import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, Settings, User, Users } from "lucide-react"
@@ -57,14 +56,17 @@ const sidebarNavItems: NavItem[] = [
   },
 ]
 
+interface LayoutProps {
+  children: React.ReactNode
+  className?: string
+}
+
 function SidebarContent() {
   const location = useLocation()
   const pathname = location.pathname
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  
-  // Update how we check for admin role
-  const isAdmin = user?.user_metadata?.role === 'admin' || user?.user_metadata?.user_type === 'admin'
+  const isAdmin = user?.user_metadata?.user_type === 'admin'
 
   const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
 
@@ -73,10 +75,8 @@ function SidebarContent() {
     navigate('/login')
   }
 
-  const getRoleBadgeVariant = (role?: string) => {
-    if (!role) return 'secondary'
-    
-    switch (role.toLowerCase()) {
+  const getRoleBadgeVariant = (role: string) => {
+    switch (role) {
       case 'admin':
         return 'default'
       case 'student':
@@ -148,9 +148,9 @@ function SidebarContent() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span className="flex-1">{user?.email || 'Guest'}</span>
-            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.role || user?.user_metadata?.user_type)}>
-              {(user?.user_metadata?.role || user?.user_metadata?.user_type || 'guest')}
+            <span className="flex-1">{user?.email}</span>
+            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.role)}>
+              {user?.user_metadata?.role || 'student'}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
@@ -169,11 +169,6 @@ function SidebarContent() {
       </div>
     </div>
   )
-}
-
-interface LayoutProps {
-  children: React.ReactNode
-  className?: string
 }
 
 export function Layout({ children, className }: LayoutProps) {

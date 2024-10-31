@@ -19,8 +19,8 @@ export default function Users() {
   const [selectedUser, setSelectedUser] = useState<Profile | undefined>()
   const { user } = useAuth()
   
-  // Update how we check for admin role
-  const isAdmin = user?.user_metadata?.role === 'admin' || user?.user_metadata?.user_type === 'admin'
+  // Update the admin check to use user_type
+  const isAdmin = user?.user_metadata?.user_type === 'admin'
 
   // Redirect non-admin users to dashboard
   if (!isAdmin) {
