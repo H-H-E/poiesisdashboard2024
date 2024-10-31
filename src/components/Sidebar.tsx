@@ -1,12 +1,24 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Book, GraduationCap, Home, Users, Award } from "lucide-react"
+import { Book, GraduationCap, Home, Users, Award, LogOut } from "lucide-react"
 import { NavLink } from "react-router-dom"
+import { useAuth } from "@/contexts/AuthContext"
+import { useToast } from "@/components/ui/use-toast"
+import { useNavigate } from "react-router-dom"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className }: SidebarProps) {
+  const { signOut } = useAuth()
+  const { toast } = useToast()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/login')
+  }
+
   return (
     <div className={cn("pb-12 min-h-screen", className)}>
       <div className="space-y-4 py-4">
@@ -58,6 +70,14 @@ export function Sidebar({ className }: SidebarProps) {
               <Award className="h-4 w-4" />
               Points
             </NavLink>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start gap-3 px-3 text-sm text-muted-foreground hover:bg-accent hover:text-primary"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
           </div>
         </div>
       </div>
