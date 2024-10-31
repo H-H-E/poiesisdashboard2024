@@ -66,7 +66,7 @@ function SidebarContent() {
   const pathname = location.pathname
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const isAdmin = user?.user_metadata?.role === 'admin'
+  const isAdmin = user?.user_metadata?.user_type === 'admin'
 
   const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
 
