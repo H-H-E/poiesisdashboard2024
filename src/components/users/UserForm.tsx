@@ -2,25 +2,12 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Form } from "@/components/ui/form"
 import { Profile } from "@/types"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { UserFormFields } from "./UserFormFields"
+import { createRoleSpecificEntry } from "@/utils/userUtils"
 
 const userFormSchema = z.object({
   first_name: z.string().min(2, "First name must be at least 2 characters"),
@@ -30,7 +17,7 @@ const userFormSchema = z.object({
   role: z.enum(["admin", "student", "parent"]),
 })
 
-type UserFormValues = z.infer<typeof userFormSchema>
+export type UserFormValues = z.infer<typeof userFormSchema>
 
 interface UserFormProps {
   user?: Profile
@@ -54,7 +41,6 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
   const onSubmit = async (data: UserFormValues) => {
     try {
       if (user) {
-        // Update existing user
         const { error } = await supabase
           .from("user_profiles")
           .update({
@@ -69,7 +55,6 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
         if (error) throw error
         toast({ title: "User updated successfully" })
       } else {
-        // Create new user in Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
           password: "temporary-password", // In production, implement proper password handling
@@ -84,7 +69,6 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
         if (authError) throw authError
 
         if (authData.user) {
-          // Create user profile
           const { error: profileError } = await supabase
             .from("user_profiles")
             .insert({
@@ -98,15 +82,7 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
 
           if (profileError) throw profileError
 
-          // Create role-specific entry
-          const roleTable = `${data.role}s` // students, parents, or admins
-          const { error: roleError } = await supabase
-            .from(roleTable)
-            .insert({
-              id: authData.user.id,
-            })
-
-          if (roleError) throw roleError
+          await createRoleSpecificEntry(authData.user.id, data.role)
         }
 
         toast({ title: "User created successfully" })
@@ -125,88 +101,8 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="first_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>First Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="last_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} type="email" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone (optional)</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="parent">Parent</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <UserFormFields form={form} />
+        
         <div className="flex justify-end gap-4">
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
