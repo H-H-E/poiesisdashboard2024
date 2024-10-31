@@ -15,7 +15,6 @@ const userFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
   role: z.enum(["admin", "student", "parent"]),
-  password: z.string().min(6, "Password must be at least 6 characters").optional(),
 })
 
 export type UserFormValues = z.infer<typeof userFormSchema>
@@ -36,15 +35,13 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
       email: "",
       phone: "",
       role: "student",
-      password: "",
     },
   })
 
   const onSubmit = async (data: UserFormValues) => {
     try {
       if (user) {
-        // Update existing user profile
-        const { error: profileError } = await supabase
+        const { error } = await supabase
           .from("user_profiles")
           .update({
             first_name: data.first_name,
@@ -55,31 +52,15 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           })
           .eq("id", user.id)
 
-        if (profileError) throw profileError
-
-        // For password updates, users should use the password reset functionality
-        if (data.password) {
-          const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-            data.email,
-            { redirectTo: `${window.location.origin}/reset-password` }
-          )
-          if (resetError) throw resetError
-          toast({ 
-            title: "Password reset email sent",
-            description: "User will receive instructions to set a new password."
-          })
-        }
-
+        if (error) throw error
         toast({ title: "User updated successfully" })
       } else {
-        // Check if user exists - using maybeSingle() to handle no results gracefully
-        const { data: existingUser, error: checkError } = await supabase
+        // First check if user exists
+        const { data: existingUser } = await supabase
           .from("user_profiles")
           .select("id")
           .eq("email", data.email)
-          .maybeSingle()
-
-        if (checkError) throw checkError
+          .single()
 
         if (existingUser) {
           toast({ 
@@ -90,16 +71,16 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           return
         }
 
-        // Create new user
+        // Create new user in Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
-          password: data.password || "temporary-password",
+          password: "temporary-password", // In production, implement proper password handling
           options: {
             data: {
               first_name: data.first_name,
               last_name: data.last_name,
             },
-          }
+          },
         })
 
         if (authError) {

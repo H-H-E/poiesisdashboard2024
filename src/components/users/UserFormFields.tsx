@@ -61,20 +61,6 @@ export function UserFormFields({ form }: UserFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{field.value ? "New Password" : "Password"}</FormLabel>
-            <FormControl>
-              <Input {...field} type="password" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="phone"
         render={({ field }) => (
           <FormItem>
