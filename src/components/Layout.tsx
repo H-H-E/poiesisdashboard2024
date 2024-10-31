@@ -161,8 +161,8 @@ function SidebarContent() {
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
             <span className="flex-1">{user?.email}</span>
-            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.role)}>
-              {user?.user_metadata?.role || 'student'}
+            <Badge variant={getRoleBadgeVariant(user?.user_metadata?.user_type)}>
+              {user?.user_metadata?.user_type || 'student'}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
