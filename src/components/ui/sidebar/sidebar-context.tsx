@@ -41,9 +41,9 @@ export function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
-    }),
+    }) as SidebarContextValue,
     [open, openProp, onOpenChangeProp, openMobile, toggleSidebar]
-  ) as SidebarContextValue
+  )
 
   return (
     <SidebarContext.Provider value={value}>
