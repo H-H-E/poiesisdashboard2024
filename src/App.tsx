@@ -4,8 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { Layout } from "@/components/Layout"
-import { AuthProvider } from "@/contexts/AuthContext"
-import { useAuth } from "@/contexts/AuthContext"
+import { AuthProvider, useAuth } from "@/contexts/AuthContext"
 import Dashboard from "./pages/Dashboard"
 import Pathways from "./pages/Pathways"
 import Projects from "./pages/Projects"
@@ -19,20 +18,18 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session } = useAuth()
   
   if (!session) {
-    return <Navigate to="/login" />
+    return <Navigate to="/login" replace />
   }
   
-  return children
+  return <>{children}</>
 }
 
-const App = () => {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
           <TooltipProvider>
-            <Toaster />
-            <Sonner />
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route
@@ -52,6 +49,8 @@ const App = () => {
                 }
               />
             </Routes>
+            <Toaster />
+            <Sonner />
           </TooltipProvider>
         </AuthProvider>
       </BrowserRouter>
