@@ -1,20 +1,24 @@
-import { Header } from "./Header";
-import { cn } from "@/lib/utils";
+import { Header } from "./Header"
+import { Sidebar } from "./Sidebar"
+import { cn } from "@/lib/utils"
 
 interface LayoutProps {
-  children: React.ReactNode;
-  userRole: "admin" | "student" | "parent";
-  onLogout: () => void;
-  className?: string;
+  children: React.ReactNode
+  userRole: "admin" | "student" | "parent"
+  onLogout: () => void
+  className?: string
 }
 
 export function Layout({ children, userRole, onLogout, className }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       <Header userRole={userRole} onLogout={onLogout} />
-      <main className={cn("container mx-auto px-4 py-8", className)}>
-        {children}
-      </main>
+      <div className="flex">
+        <Sidebar className="w-64 border-r" />
+        <main className={cn("flex-1 p-8", className)}>
+          {children}
+        </main>
+      </div>
     </div>
-  );
+  )
 }
