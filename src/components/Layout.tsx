@@ -31,7 +31,7 @@ export function Layout({ children, className }: LayoutProps) {
       </aside>
 
       <main className={cn("flex-1 md:pl-[240px]", className)}>
-        <div className="container max-w-7xl p-4 md:p-6 lg:p-8">
+        <div className="container p-4 md:p-6 lg:p-8">
           {children}
         </div>
       </main>
