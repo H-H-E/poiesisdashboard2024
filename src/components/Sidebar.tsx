@@ -1,17 +1,17 @@
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Book, GraduationCap, Home, Users, Award, LogOut } from "lucide-react"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
-import { useNavigate } from "react-router-dom"
+import { supabase } from "@/integrations/supabase/client"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className }: SidebarProps) {
-  const { signOut, user } = useAuth()
   const navigate = useNavigate()
+  const { signOut, user } = useAuth()
   const [isAdmin, setIsAdmin] = useState(false)
-  const { user } = useAuth()
   
   useEffect(() => {
     async function checkUserType() {
