@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { ProfileHeader } from "./ProfileHeader"
 
 interface PlenarySession {
   id: string
@@ -83,9 +84,12 @@ export function StudentDashboard() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {/* Recent Plenaries */}
-      <Card className="col-span-full lg:col-span-2">
+    <div className="space-y-6">
+      <ProfileHeader />
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Recent Plenaries */}
+        <Card className="col-span-full lg:col-span-2">
         <CardHeader>
           <CardTitle>Recent Plenary Sessions</CardTitle>
         </CardHeader>
@@ -112,10 +116,10 @@ export function StudentDashboard() {
             </div>
           )}
         </CardContent>
-      </Card>
+        </Card>
 
-      {/* Points Graph */}
-      <Card className="col-span-full lg:col-span-1">
+        {/* Points Graph */}
+        <Card className="col-span-full lg:col-span-1">
         <CardHeader>
           <CardTitle>Poiesis Points</CardTitle>
         </CardHeader>
@@ -134,10 +138,10 @@ export function StudentDashboard() {
             </ResponsiveContainer>
           )}
         </CardContent>
-      </Card>
+        </Card>
 
-      {/* Active Pathways */}
-      <Card className="col-span-full">
+        {/* Active Pathways */}
+        <Card className="col-span-full">
         <CardHeader>
           <CardTitle>Active Pathways</CardTitle>
         </CardHeader>
@@ -163,7 +167,8 @@ export function StudentDashboard() {
             </div>
           )}
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

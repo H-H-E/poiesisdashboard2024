@@ -1,138 +1,74 @@
-import { useAuth } from "@/contexts/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
+import { useAuth } from "@/contexts/AuthContext"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-
-interface Student {
-  id: string
-  user_profiles: {
-    first_name: string | null
-    last_name: string | null
-  }
-  grade_level: string | null
-}
-
-interface Event {
-  id: string
-  title: string
-  description: string
-  start_time: string
-  end_time: string
-}
+import { ProfileHeader } from "./ProfileHeader"
+import { UserCard } from "../UserCard"
 
 export function ParentDashboard() {
   const { user } = useAuth()
 
-  const { data: children, isLoading: childrenLoading, error: childrenError } = useQuery({
+  const { data: children, isLoading, error } = useQuery({
     queryKey: ['children', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('parent_student_relations')
+        .from('student_parent_relationships')
         .select(`
-          student:students!inner (
+          students (
             id,
-            grade_level,
-            user_profiles!inner (
+            user_profiles (
               first_name,
-              last_name
+              last_name,
+              email,
+              phone
             )
           )
         `)
         .eq('parent_id', user?.id)
-      
+
       if (error) throw error
-      return data?.map(relation => relation.student) as Student[]
+      return data
     },
+    enabled: !!user?.id,
   })
 
-  const { data: events, isLoading: eventsLoading } = useQuery({
-    queryKey: ['events'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .gte('start_time', new Date().toISOString())
-        .order('start_time', { ascending: true })
-        .limit(5)
-      
-      if (error) throw error
-      return data as Event[]
-    },
-  })
-
-  if (childrenError) {
+  if (error) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
+        <AlertDescription>Failed to load children data</AlertDescription>
       </Alert>
     )
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {/* Children Overview */}
-      <Card className="col-span-full">
+    <div className="space-y-6">
+      <ProfileHeader />
+      
+      <Card>
         <CardHeader>
-          <CardTitle>Children Overview</CardTitle>
+          <CardTitle>My Children</CardTitle>
         </CardHeader>
-        <CardContent>
-          {childrenLoading ? (
-            <div className="space-y-2">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-            </div>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          {isLoading ? (
+            <>
+              <UserCard.Skeleton />
+              <UserCard.Skeleton />
+            </>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {children?.map((child) => (
-                <Card key={child.id}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">
-                      {child.user_profiles.first_name} {child.user_profiles.last_name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      Grade Level: {child.grade_level}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Upcoming Events */}
-      <Card className="col-span-full">
-        <CardHeader>
-          <CardTitle>Upcoming Events</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {eventsLoading ? (
-            <div className="space-y-2">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {events?.map((event) => (
-                <Card key={event.id}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{event.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{event.description}</p>
-                    <div className="mt-2 text-sm">
-                      <p>Start: {new Date(event.start_time).toLocaleString()}</p>
-                      <p>End: {new Date(event.end_time).toLocaleString()}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            children?.map((relationship) => {
+              const student = relationship.students.user_profiles
+              return (
+                <UserCard
+                  key={relationship.students.id}
+                  name={`${student.first_name} ${student.last_name}`}
+                  role="student"
+                  email={student.email}
+                  phone={student.phone}
+                />
+              )
+            })
           )}
         </CardContent>
       </Card>
