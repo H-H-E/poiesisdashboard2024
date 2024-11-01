@@ -55,7 +55,7 @@ export function Sidebar({ className }: SidebarProps) {
             Projects
           </NavLink>
           {isAdmin && (
-            <NavLink to="/users" className={({ isActive }) => 
+            <NavLink to="/users" end className={({ isActive }) => 
               cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
                 isActive ? "text-primary bg-accent" : "text-muted-foreground"
