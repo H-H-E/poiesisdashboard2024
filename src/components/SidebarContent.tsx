@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
@@ -65,30 +64,18 @@ export function SidebarContent({ className }: SidebarProps) {
     navigate("/login")
   }
 
-  const getRoleBadgeVariant = (type: string = "student") => {
-    switch (type) {
-      case "admin":
-        return "default"
-      case "student":
-        return "secondary"
-      case "parent":
-        return "outline"
-      default:
-        return "secondary"
-    }
-  }
-
   if (isLoading) {
-    return <div className="p-3">Loading...</div>
+    return null
   }
 
   return (
     <div className="flex h-full flex-col">
-      <div className="p-2">
-        <h2 className="mb-1 px-2 text-lg font-semibold tracking-tight">Poiesis</h2>
+      <div className="border-b px-3 py-2">
+        <h2 className="text-lg font-semibold">Poiesis</h2>
       </div>
+      
       <ScrollArea className="flex-1">
-        <nav className="flex flex-col gap-1 p-2">
+        <div className="p-2">
           {navItems.map((item: NavItem) => {
             if (item.adminOnly && userType !== "admin") {
               return null
@@ -105,20 +92,20 @@ export function SidebarContent({ className }: SidebarProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-full justify-start gap-2 px-2"
+                        className="w-full justify-start gap-2 px-2"
                       >
                         <item.icon className="h-4 w-4" />
                         <span className="text-sm">{item.title}</span>
                         <ChevronDown className="ml-auto h-3 w-3" />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="ml-2 flex flex-col gap-1">
+                    <CollapsibleContent className="ml-2">
                       {item.subItems.map((subItem) => (
                         <Button
                           key={subItem.href}
                           variant="ghost"
                           size="sm"
-                          className="h-7 w-full justify-start px-2 text-sm"
+                          className="w-full justify-start px-2 text-sm"
                           asChild
                         >
                           <Link to={subItem.href}>{subItem.title}</Link>
@@ -130,7 +117,7 @@ export function SidebarContent({ className }: SidebarProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-full justify-start gap-2 px-2"
+                    className="w-full justify-start gap-2 px-2"
                     asChild
                   >
                     <Link to={item.href}>
@@ -142,8 +129,9 @@ export function SidebarContent({ className }: SidebarProps) {
               </div>
             )
           })}
-        </nav>
+        </div>
       </ScrollArea>
+
       <div className="border-t p-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -152,8 +140,8 @@ export function SidebarContent({ className }: SidebarProps) {
               {firstName || "User"}
             </span>
           </div>
-          <Button
-            variant="ghost"
+          <Button 
+            variant="ghost" 
             size="icon"
             onClick={handleLogout}
             className="h-8 w-8"
@@ -163,8 +151,8 @@ export function SidebarContent({ className }: SidebarProps) {
           </Button>
         </div>
         <Badge 
-          variant={getRoleBadgeVariant(userType)}
-          className="mt-2 capitalize w-fit text-xs"
+          variant="outline"
+          className="mt-2 w-fit text-xs capitalize"
         >
           {userType}
         </Badge>
