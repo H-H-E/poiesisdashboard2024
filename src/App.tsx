@@ -13,6 +13,7 @@ import Users from "./pages/Users"
 import Points from "./pages/Points"
 import Profile from "./pages/Profile"
 import Login from "./pages/Login"
+import Calendar from "./pages/Calendar"
 
 const queryClient = new QueryClient()
 
@@ -47,6 +48,7 @@ function App() {
                           <Route path="users/*" element={<Users />} />
                           <Route path="points" element={<Points />} />
                           <Route path="profile" element={<Profile />} />
+                          <Route path="calendar" element={<Calendar />} />
                         </Routes>
                       </Layout>
                     </ProtectedRoute>
