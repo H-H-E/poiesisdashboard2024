@@ -25,13 +25,13 @@ export function Layout({ children, className }: LayoutProps) {
       </Sheet>
 
       <aside className="hidden w-[240px] md:block">
-        <div className="fixed inset-y-0 w-[240px] border-r">
+        <div className="fixed inset-y-0 z-20 w-[240px] border-r bg-background">
           <SidebarContent />
         </div>
       </aside>
 
       <main className={cn("flex-1 md:pl-[240px]", className)}>
-        <div className="container py-6">
+        <div className="container max-w-7xl p-4 md:p-6 lg:p-8">
           {children}
         </div>
       </main>
