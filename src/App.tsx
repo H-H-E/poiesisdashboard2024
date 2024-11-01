@@ -11,6 +11,7 @@ import Pathways from "./pages/Pathways"
 import Projects from "./pages/Projects"
 import Users from "./pages/Users"
 import Points from "./pages/Points"
+import Profile from "./pages/Profile"
 import Login from "./pages/Login"
 
 const queryClient = new QueryClient()
@@ -45,6 +46,7 @@ function App() {
                           <Route path="/projects" element={<Projects />} />
                           <Route path="/users" element={<Users />} />
                           <Route path="/points" element={<Points />} />
+                          <Route path="/profile" element={<Profile />} />
                         </Routes>
                       </Layout>
                     </ProtectedRoute>
