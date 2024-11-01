@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { ProfileHeader } from "./ProfileHeader"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -63,24 +62,26 @@ export function StudentDashboard() {
           <CardHeader>
             <CardTitle>Plenary Management</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4 sm:flex-row">
-            <Button 
-              onClick={() => setIsPlenaryFormOpen(true)}
-              className="flex-1"
-              size="lg"
-            >
-              <PlusCircle className="mr-2 h-5 w-5" />
-              Add New Plenary
-            </Button>
-            <Button 
-              onClick={() => setIsRecentPlenariesOpen(true)}
-              className="flex-1"
-              variant="outline"
-              size="lg"
-            >
-              <List className="mr-2 h-5 w-5" />
-              View Recent Plenaries
-            </Button>
+          <CardContent>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Button 
+                onClick={() => setIsPlenaryFormOpen(true)}
+                size="lg"
+                className="w-full h-auto py-6"
+              >
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Add New Plenary
+              </Button>
+              <Button 
+                onClick={() => setIsRecentPlenariesOpen(true)}
+                variant="outline"
+                size="lg"
+                className="w-full h-auto py-6"
+              >
+                <List className="mr-2 h-5 w-5" />
+                View Recent Plenaries
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -92,16 +93,30 @@ export function StudentDashboard() {
           <CardContent>
             {pointsLoading ? (
               <Skeleton className="h-[200px] w-full" />
+            ) : points && points.length > 0 ? (
+              <div className="h-[200px] w-full">
+                <svg
+                  className="w-full h-full"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d={points
+                      .map((point, i) => {
+                        const x = (i / (points.length - 1)) * 100
+                        const y = 100 - ((point.points / Math.max(...points.map(p => p.points))) * 100)
+                        return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
+                      })
+                      .join(' ')}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="text-primary"
+                  />
+                </svg>
+              </div>
             ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={points}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="created_at" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="points" stroke="#8884d8" />
-                </LineChart>
-              </ResponsiveContainer>
+              <p className="text-muted-foreground text-center py-8">No points data available</p>
             )}
           </CardContent>
         </Card>
