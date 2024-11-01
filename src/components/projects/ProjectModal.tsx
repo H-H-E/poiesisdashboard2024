@@ -50,7 +50,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
       const { data, error } = await supabase
         .from("plenaries")
         .select("*")
-        .eq("pathway_id", project.pathway_id)
+        .is("pathway_id", null)  // Changed from eq.null to is.null
       
       if (error) throw error
       return data ?? []
