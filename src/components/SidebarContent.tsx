@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { NavigationItems } from "./sidebar/NavigationItems"
 import { SidebarHeader } from "./sidebar/SidebarHeader"
 import { SidebarFooter } from "./sidebar/SidebarFooter"
+import { cn } from "@/lib/utils"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed?: boolean
