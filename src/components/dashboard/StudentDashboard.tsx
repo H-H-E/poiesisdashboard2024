@@ -53,7 +53,7 @@ export function StudentDashboard() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-6">
       <ProfileHeader />
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
