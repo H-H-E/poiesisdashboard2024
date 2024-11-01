@@ -2,9 +2,10 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { ChevronDown, LogOut, User, ExternalLink } from "lucide-react"
+import { ChevronDown, LogOut, User, ExternalLink, Moon, Sun } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
+import { useTheme } from "next-themes"
 import { supabase } from "@/integrations/supabase/client"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { adminNavItems, studentNavItems, parentNavItems } from "@/config/navigation"
@@ -15,6 +16,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SidebarContent({ className }: SidebarProps) {
   const { signOut, user } = useAuth()
+  const { setTheme, theme } = useTheme()
   const [userType, setUserType] = useState<string>("student")
   const [firstName, setFirstName] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
@@ -66,7 +68,8 @@ export function SidebarContent({ className }: SidebarProps) {
   }
 
   const handleWhiteboardOpen = () => {
-    const date = format(new Date(), "MMMMdo'yyyy'")
+    const year = new Date().getFullYear()
+    const date = format(new Date(), `MMMMdo'${year}'`)
     window.open(`https://draw.poiesis.education/multiplayer/${date}`, '_blank')
   }
 
@@ -149,7 +152,7 @@ export function SidebarContent({ className }: SidebarProps) {
       </ScrollArea>
 
       <div className="border-t p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">
@@ -166,12 +169,24 @@ export function SidebarContent({ className }: SidebarProps) {
             <span className="sr-only">Log out</span>
           </Button>
         </div>
-        <Badge 
-          variant="outline"
-          className="mt-2 w-fit text-xs capitalize"
-        >
-          {userType}
-        </Badge>
+        <div className="flex items-center justify-between">
+          <Badge 
+            variant="outline"
+            className="w-fit text-xs capitalize"
+          >
+            {userType}
+          </Badge>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            className="h-8 w-8"
+          >
+            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        </div>
       </div>
     </div>
   )
