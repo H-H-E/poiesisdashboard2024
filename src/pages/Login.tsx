@@ -11,6 +11,14 @@ export default function Login() {
   const { toast } = useToast()
 
   useEffect(() => {
+    // Check if there's an existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/')
+      }
+    })
+
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         toast({
@@ -20,8 +28,24 @@ export default function Login() {
       }
     })
 
-    return () => subscription.unsubscribe()
+    // Cleanup subscription
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [navigate, toast])
+
+  // Prevent keyboard event handling on document
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle specific keys if needed
+      if (e.key && ['Escape', 'Enter'].includes(e.key.toLowerCase())) {
+        // Handle specific keys
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
