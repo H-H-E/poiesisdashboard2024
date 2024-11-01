@@ -21,11 +21,15 @@ export default function Users() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<Profile | undefined>()
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { user } = useAuth()
   
   useEffect(() => {
     async function checkUserType() {
-      if (!user?.id) return
+      if (!user?.id) {
+        setIsLoading(false)
+        return
+      }
       
       const { data: profile } = await supabase
         .from('user_profiles')
@@ -34,10 +38,15 @@ export default function Users() {
         .single()
 
       setIsAdmin(profile?.user_type === 'admin')
+      setIsLoading(false)
     }
 
     checkUserType()
   }, [user?.id])
+
+  if (isLoading) {
+    return null // or a loading spinner
+  }
 
   // Redirect non-admin users to dashboard
   if (!isAdmin) {
