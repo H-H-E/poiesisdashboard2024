@@ -3,7 +3,7 @@ import { PathwayExplorer } from "@/components/pathways/PathwayExplorer"
 
 export default function Pathways() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-8">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Learning Pathways</h1>
       </div>
