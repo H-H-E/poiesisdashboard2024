@@ -30,8 +30,8 @@ export function Layout({ children, className }: LayoutProps) {
         </div>
       </aside>
 
-      <main className={cn("flex-1 md:pl-[240px]", className)}>
-        <div className="p-4 md:p-6 lg:p-8">
+      <main className={cn("flex-1", className)}>
+        <div className="px-2">
           {children}
         </div>
       </main>

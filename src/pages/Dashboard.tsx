@@ -15,7 +15,7 @@ export default function Dashboard() {
   }[userType] || StudentDashboard
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-4">
       <DashboardComponent />
       <EventsTable />
     </div>
