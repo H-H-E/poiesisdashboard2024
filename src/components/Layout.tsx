@@ -25,10 +25,12 @@ export function Layout({ children, className }: LayoutProps) {
       </Sheet>
 
       <aside className="hidden w-[240px] border-r md:block">
-        <SidebarContent />
+        <div className="fixed h-screen w-[240px] border-r">
+          <SidebarContent />
+        </div>
       </aside>
 
-      <main className={cn("flex-1 px-4 py-6 md:px-8", className)}>
+      <main className={cn("flex-1 overflow-auto px-4 py-6 md:px-8 md:ml-[240px]", className)}>
         {children}
       </main>
     </div>

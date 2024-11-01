@@ -85,12 +85,12 @@ export function SidebarContent({ className }: SidebarProps) {
   }
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-full flex-col">
       <div className="p-3">
         <h2 className="text-base font-semibold tracking-tight">Poiesis</h2>
       </div>
-      <ScrollArea className="flex-1 px-2">
-        <nav className="flex flex-col gap-1 py-1">
+      <ScrollArea className="flex-1">
+        <nav className="flex flex-col gap-1 p-2">
           {navItems.map((item: NavItem) => {
             if (item.adminOnly && userType !== "admin") {
               return null
@@ -153,33 +153,29 @@ export function SidebarContent({ className }: SidebarProps) {
         </nav>
       </ScrollArea>
       <div className="border-t p-3">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <User className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
-                {firstName || "User"}
-              </span>
-            </div>
-            <Badge 
-              variant={getRoleBadgeVariant(userType)}
-              className="capitalize w-fit text-xs"
-            >
-              {userType}
-            </Badge>
-          </div>
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              className="h-7 w-7"
-            >
-              <LogOut className="h-3 w-3" />
-              <span className="sr-only">Log out</span>
-            </Button>
+            <User className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              {firstName || "User"}
+            </span>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            className="h-8 w-8"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="sr-only">Log out</span>
+          </Button>
         </div>
+        <Badge 
+          variant={getRoleBadgeVariant(userType)}
+          className="mt-2 capitalize w-fit text-xs"
+        >
+          {userType}
+        </Badge>
       </div>
     </div>
   )
