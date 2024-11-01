@@ -19,6 +19,7 @@ export function SidebarContent() {
   const navigate = useNavigate()
   const [userType, setUserType] = useState<string>("student")
   const [openItem, setOpenItem] = useState<string | null>(null)
+  const [firstName, setFirstName] = useState<string>("")
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -26,12 +27,13 @@ export function SidebarContent() {
       
       const { data: profile } = await supabase
         .from("user_profiles")
-        .select("user_type")
+        .select("user_type, first_name")
         .eq("id", user.id)
         .single()
 
       if (profile) {
         setUserType(profile.user_type)
+        setFirstName(profile.first_name || "")
       }
     }
 
@@ -134,12 +136,16 @@ export function SidebarContent() {
       </ScrollArea>
       <div className="border-t p-6">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
-            <span className="flex-1 text-sm text-muted-foreground">{user?.email || ""}</span>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <span className="flex-1 text-sm text-muted-foreground">
+                {firstName || "User"}
+              </span>
+            </div>
             <Badge 
               variant={getRoleBadgeVariant(userType)}
-              className="capitalize bg-secondary text-secondary-foreground"
+              className="capitalize bg-secondary text-secondary-foreground w-fit"
             >
               {userType}
             </Badge>
