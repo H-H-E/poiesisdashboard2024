@@ -20,20 +20,30 @@ export function SidebarContent() {
   const [userType, setUserType] = useState<string>("student")
   const [openItem, setOpenItem] = useState<string | null>(null)
   const [firstName, setFirstName] = useState<string>("")
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function fetchUserProfile() {
-      if (!user?.id) return
+      if (!user?.id) {
+        setIsLoading(false)
+        return
+      }
       
-      const { data: profile } = await supabase
-        .from("user_profiles")
-        .select("user_type, first_name")
-        .eq("id", user.id)
-        .single()
+      try {
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("user_type, first_name")
+          .eq("id", user.id)
+          .single()
 
-      if (profile) {
-        setUserType(profile.user_type)
-        setFirstName(profile.first_name || "")
+        if (profile) {
+          setUserType(profile.user_type)
+          setFirstName(profile.first_name || "")
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -67,6 +77,10 @@ export function SidebarContent() {
       default:
         return "secondary"
     }
+  }
+
+  if (isLoading) {
+    return <div className="p-6">Loading...</div>
   }
 
   return (
