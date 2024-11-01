@@ -1,25 +1,23 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { ScrollArea } from "./ui/scroll-area"
 import { ThemeToggle } from "./ThemeToggle"
 import { Badge } from "./ui/badge"
-import { LogOut, User } from "lucide-react"
-import { Link } from "react-router-dom"
+import { LogOut, User, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
-import { ChevronDown } from "lucide-react"
-import { sidebarNavItems } from "@/config/navigation"
 import { supabase } from "@/integrations/supabase/client"
+import { adminNavItems, studentNavItems, parentNavItems } from "@/config/navigation"
+import type { NavItem } from "@/config/navigation"
 
 export function SidebarContent() {
   const location = useLocation()
   const pathname = location.pathname
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [userType, setUserType] = useState<string>('student')
+  const [userType, setUserType] = useState<string>("student")
   const [openItem, setOpenItem] = useState<string | null>(null)
 
   useEffect(() => {
@@ -27,48 +25,56 @@ export function SidebarContent() {
       if (!user?.id) return
       
       const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('user_type')
-        .eq('id', user.id)
+        .from("user_profiles")
+        .select("user_type")
+        .eq("id", user.id)
         .single()
 
       if (profile) {
         setUserType(profile.user_type)
-        setIsAdmin(profile.user_type === 'admin')
       }
     }
 
     fetchUserProfile()
   }, [user?.id])
 
-  const filteredNavItems = sidebarNavItems.filter(item => !item.adminOnly || isAdmin)
+  const navItems = (() => {
+    switch (userType) {
+      case "admin":
+        return adminNavItems
+      case "parent":
+        return parentNavItems
+      default:
+        return studentNavItems
+    }
+  })()
 
   const handleLogout = async () => {
     await signOut()
-    navigate('/login')
+    navigate("/login")
   }
 
-  const getRoleBadgeVariant = (userType: string = 'student') => {
-    switch (userType) {
-      case 'admin':
-        return 'default'
-      case 'student':
-        return 'secondary'
-      case 'parent':
-        return 'outline'
+  const getRoleBadgeVariant = (type: string = "student") => {
+    switch (type) {
+      case "admin":
+        return "default"
+      case "student":
+        return "secondary"
+      case "parent":
+        return "outline"
       default:
-        return 'secondary'
+        return "secondary"
     }
   }
 
   return (
     <div className="flex h-full flex-col">
       <div className="p-6">
-        <h2 className="text-lg font-semibold">Poiesis</h2>
+        <h2 className="text-lg font-semibold tracking-tight">Poiesis</h2>
       </div>
       <ScrollArea className="flex-1 px-4">
         <nav className="flex flex-col gap-2">
-          {filteredNavItems.map((item) => (
+          {navItems.map((item: NavItem) => (
             <div key={item.href}>
               {item.subItems ? (
                 <Collapsible
@@ -124,7 +130,7 @@ export function SidebarContent() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span className="flex-1">{user?.email || ''}</span>
+            <span className="flex-1">{user?.email || ""}</span>
             <Badge variant={getRoleBadgeVariant(userType)}>
               {userType}
             </Badge>
