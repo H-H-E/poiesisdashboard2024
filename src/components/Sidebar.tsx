@@ -10,7 +10,24 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function Sidebar({ className }: SidebarProps) {
   const { signOut, user } = useAuth()
   const navigate = useNavigate()
-  const isAdmin = user?.user_metadata?.user_type === 'admin'
+  const [isAdmin, setIsAdmin] = useState(false)
+  const { user } = useAuth()
+  
+  useEffect(() => {
+    async function checkUserType() {
+      if (!user?.id) return
+      
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('user_type')
+        .eq('id', user.id)
+        .single()
+
+      setIsAdmin(profile?.user_type === 'admin')
+    }
+
+    checkUserType()
+  }, [user?.id])
 
   const handleLogout = async () => {
     await signOut()
@@ -27,7 +44,7 @@ export function Sidebar({ className }: SidebarProps) {
 
       <div className="flex-1 px-3">
         <div className="space-y-1">
-          <NavLink to="/" className={({ isActive }) => 
+          <NavLink to="/" end className={({ isActive }) => 
             cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
               isActive ? "text-primary bg-accent" : "text-muted-foreground"
@@ -55,7 +72,7 @@ export function Sidebar({ className }: SidebarProps) {
             Projects
           </NavLink>
           {isAdmin && (
-            <NavLink to="/users" end className={({ isActive }) => 
+            <NavLink to="/users" className={({ isActive }) => 
               cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
                 isActive ? "text-primary bg-accent" : "text-muted-foreground"

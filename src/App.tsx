@@ -41,12 +41,12 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <Routes>
-                          <Route path="/" element={<Dashboard />} />
-                          <Route path="/pathways" element={<Pathways />} />
-                          <Route path="/projects" element={<Projects />} />
-                          <Route path="/users" element={<Users />} />
-                          <Route path="/points" element={<Points />} />
-                          <Route path="/profile" element={<Profile />} />
+                          <Route index element={<Dashboard />} />
+                          <Route path="pathways" element={<Pathways />} />
+                          <Route path="projects" element={<Projects />} />
+                          <Route path="users/*" element={<Users />} />
+                          <Route path="points" element={<Points />} />
+                          <Route path="profile" element={<Profile />} />
                         </Routes>
                       </Layout>
                     </ProtectedRoute>
