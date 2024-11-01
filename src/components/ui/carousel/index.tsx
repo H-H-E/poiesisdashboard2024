@@ -48,14 +48,18 @@ const Carousel = React.forwardRef<
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (!event.key) return
+        // Ensure event and key exist before processing
+        if (!event?.key) return
         
-        if (event.key === "ArrowLeft") {
-          event.preventDefault()
-          scrollPrev()
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault()
-          scrollNext()
+        switch (event.key) {
+          case "ArrowLeft":
+            event.preventDefault()
+            scrollPrev()
+            break
+          case "ArrowRight":
+            event.preventDefault()
+            scrollNext()
+            break
         }
       },
       [scrollPrev, scrollNext]
