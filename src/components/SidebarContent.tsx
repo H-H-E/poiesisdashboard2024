@@ -75,7 +75,6 @@ export function SidebarContent() {
       <ScrollArea className="flex-1 px-4">
         <nav className="flex flex-col gap-2">
           {navItems.map((item: NavItem) => {
-            // Skip items that are admin-only if user is not admin
             if (item.adminOnly && userType !== "admin") {
               return null
             }
@@ -136,9 +135,12 @@ export function SidebarContent() {
       <div className="border-t p-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            <span className="flex-1">{user?.email || ""}</span>
-            <Badge variant={getRoleBadgeVariant(userType)}>
+            <User className="h-4 w-4 text-muted-foreground" />
+            <span className="flex-1 text-sm text-muted-foreground">{user?.email || ""}</span>
+            <Badge 
+              variant={getRoleBadgeVariant(userType)}
+              className="capitalize bg-secondary text-secondary-foreground"
+            >
               {userType}
             </Badge>
           </div>
