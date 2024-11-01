@@ -14,7 +14,7 @@ export function ParentDashboard() {
     queryKey: ['children', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('student_parent_relationships')
+        .from('parent_student_relations')
         .select(`
           students (
             id,
