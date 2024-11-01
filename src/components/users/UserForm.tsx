@@ -56,13 +56,14 @@ export function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
         toast({ title: "User updated successfully" })
       } else {
         // First check if user exists
-        const { data: existingUser } = await supabase
+        const { data: existingUsers, error: checkError } = await supabase
           .from("user_profiles")
           .select("id")
           .eq("email", data.email)
-          .single()
 
-        if (existingUser) {
+        if (checkError) throw checkError
+
+        if (existingUsers && existingUsers.length > 0) {
           toast({ 
             title: "User already exists", 
             description: "Please use a different email address.",

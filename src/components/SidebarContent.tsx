@@ -11,6 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { adminNavItems, studentNavItems, parentNavItems } from "@/config/navigation"
 import { format } from "date-fns"
 import type { NavItem } from "@/config/navigation"
+import { useToast } from "@/components/ui/use-toast"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -22,6 +23,7 @@ export function SidebarContent({ className }: SidebarProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [openItem, setOpenItem] = useState<string | null>(null)
   const navigate = useNavigate()
+  const { toast } = useToast()
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -31,25 +33,40 @@ export function SidebarContent({ className }: SidebarProps) {
       }
       
       try {
-        const { data: profile } = await supabase
+        const { data: profiles, error } = await supabase
           .from("user_profiles")
           .select("user_type, first_name")
           .eq("id", user.id)
-          .single()
 
-        if (profile) {
+        if (error) throw error
+
+        // Check if we got any profiles back
+        if (profiles && profiles.length > 0) {
+          const profile = profiles[0]
           setUserType(profile.user_type)
           setFirstName(profile.first_name || "")
+        } else {
+          // Handle case where no profile is found
+          toast({
+            title: "Profile not found",
+            description: "Your user profile could not be found.",
+            variant: "destructive",
+          })
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching user profile:", error)
+        toast({
+          title: "Error",
+          description: "Failed to load user profile",
+          variant: "destructive",
+        })
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchUserProfile()
-  }, [user?.id])
+  }, [user?.id, toast])
 
   const navItems = (() => {
     switch (userType) {
@@ -63,8 +80,16 @@ export function SidebarContent({ className }: SidebarProps) {
   })()
 
   const handleLogout = async () => {
-    await signOut()
-    navigate("/login")
+    try {
+      await signOut()
+      navigate("/login")
+    } catch (error) {
+      toast({
+        title: "Error signing out",
+        description: "Please try again",
+        variant: "destructive",
+      })
+    }
   }
 
   const handleWhiteboardOpen = () => {
