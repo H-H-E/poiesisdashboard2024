@@ -221,26 +221,32 @@ export type Database = {
       }
       pathways: {
         Row: {
+          color: string | null
           created_at: string
           created_by: string | null
           description: string | null
           id: string
+          position: Json | null
           title: string
           updated_at: string
         }
         Insert: {
+          color?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           id?: string
+          position?: Json | null
           title: string
           updated_at?: string
         }
         Update: {
+          color?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           id?: string
+          position?: Json | null
           title?: string
           updated_at?: string
         }
@@ -261,6 +267,7 @@ export type Database = {
           id: string
           pathway_id: string | null
           points_awarded: number | null
+          position: Json | null
           session_date: string
           student_id: string | null
           title: string
@@ -273,6 +280,7 @@ export type Database = {
           id?: string
           pathway_id?: string | null
           points_awarded?: number | null
+          position?: Json | null
           session_date: string
           student_id?: string | null
           title: string
@@ -285,6 +293,7 @@ export type Database = {
           id?: string
           pathway_id?: string | null
           points_awarded?: number | null
+          position?: Json | null
           session_date?: string
           student_id?: string | null
           title?: string
@@ -450,6 +459,8 @@ export type Database = {
           description: string | null
           id: string
           pathway_id: string | null
+          position: Json | null
+          progress: number | null
           title: string
           updated_at: string
         }
@@ -458,6 +469,8 @@ export type Database = {
           description?: string | null
           id?: string
           pathway_id?: string | null
+          position?: Json | null
+          progress?: number | null
           title: string
           updated_at?: string
         }
@@ -466,6 +479,8 @@ export type Database = {
           description?: string | null
           id?: string
           pathway_id?: string | null
+          position?: Json | null
+          progress?: number | null
           title?: string
           updated_at?: string
         }
