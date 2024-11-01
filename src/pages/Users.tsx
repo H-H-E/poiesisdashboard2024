@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog"
 import { Profile } from "@/types"
 import { supabase } from "@/integrations/supabase/client"
+import { ParentStudentManager } from "@/components/users/ParentStudentManager"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function Users() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -65,7 +67,20 @@ export default function Users() {
         </Dialog>
       </div>
 
-      <UserList onEditUser={setSelectedUser} />
+      <Tabs defaultValue="users" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="relationships">Parent-Student Links</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="users">
+          <UserList onEditUser={setSelectedUser} />
+        </TabsContent>
+
+        <TabsContent value="relationships">
+          <ParentStudentManager />
+        </TabsContent>
+      </Tabs>
 
       {selectedUser && (
         <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(undefined)}>
