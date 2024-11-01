@@ -14,6 +14,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const plenaryFormSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -23,7 +25,7 @@ const plenaryFormSchema = z.object({
     required_error: "Session date is required",
   }),
   points_awarded: z.number().min(0).max(10),
-  student_id: z.string().uuid().optional(),
+  student_id: z.string().uuid("Please select a student"),
   pathway_id: z.string().uuid().optional(),
 })
 
@@ -37,6 +39,25 @@ interface PlenaryFormProps {
 export function PlenaryForm({ onSuccess, onCancel }: PlenaryFormProps) {
   const { toast } = useToast()
   const { user } = useAuth()
+
+  const { data: students, isLoading: isLoadingStudents } = useQuery({
+    queryKey: ['students'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('students')
+        .select(`
+          id,
+          user_profiles (
+            first_name,
+            last_name,
+            email
+          )
+        `)
+
+      if (error) throw error
+      return data
+    },
+  })
 
   const form = useForm<PlenaryFormValues>({
     resolver: zodResolver(plenaryFormSchema),
@@ -115,6 +136,31 @@ export function PlenaryForm({ onSuccess, onCancel }: PlenaryFormProps) {
               <FormControl>
                 <Input type="url" placeholder="https://..." {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="student_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Student</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a student" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {students?.map((student) => (
+                    <SelectItem key={student.id} value={student.id}>
+                      {student.user_profiles.first_name} {student.user_profiles.last_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
