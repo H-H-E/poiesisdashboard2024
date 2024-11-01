@@ -34,19 +34,6 @@ export default function Login() {
     }
   }, [navigate, toast])
 
-  // Prevent keyboard event handling on document
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      // Only prevent default for specific keys we want to handle
-      if (event.key === 'Escape' || event.key === 'Enter') {
-        event.preventDefault()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">

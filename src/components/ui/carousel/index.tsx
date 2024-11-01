@@ -1,5 +1,5 @@
 import * as React from "react"
-import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react"
+import useEmblaCarousel from "embla-carousel-react"
 import { cn } from "@/lib/utils"
 import { CarouselContext } from "./carousel-context"
 import type { CarouselApi, CarouselProps } from "./types"
@@ -48,6 +48,8 @@ const Carousel = React.forwardRef<
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (!event.key) return
+        
         if (event.key === "ArrowLeft") {
           event.preventDefault()
           scrollPrev()
