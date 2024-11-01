@@ -74,56 +74,63 @@ export function SidebarContent() {
       </div>
       <ScrollArea className="flex-1 px-4">
         <nav className="flex flex-col gap-2">
-          {navItems.map((item: NavItem) => (
-            <div key={item.href}>
-              {item.subItems ? (
-                <Collapsible
-                  open={openItem === item.href}
-                  onOpenChange={() => setOpenItem(openItem === item.href ? null : item.href)}
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start gap-2"
-                    >
+          {navItems.map((item: NavItem) => {
+            // Skip items that are admin-only if user is not admin
+            if (item.adminOnly && userType !== "admin") {
+              return null
+            }
+
+            return (
+              <div key={item.href}>
+                {item.subItems ? (
+                  <Collapsible
+                    open={openItem === item.href}
+                    onOpenChange={() => setOpenItem(openItem === item.href ? null : item.href)}
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start gap-2"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                        <ChevronDown className="ml-auto h-4 w-4" />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="ml-4 mt-2 flex flex-col gap-2">
+                      {item.subItems.map((subItem) => (
+                        <Button
+                          key={subItem.href}
+                          variant="ghost"
+                          className={cn(
+                            "w-full justify-start",
+                            pathname === subItem.href && "bg-accent"
+                          )}
+                          asChild
+                        >
+                          <Link to={subItem.href}>{subItem.title}</Link>
+                        </Button>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start gap-2",
+                      pathname === item.href && "bg-accent"
+                    )}
+                    asChild
+                  >
+                    <Link to={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
-                      <ChevronDown className="ml-auto h-4 w-4" />
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="ml-4 mt-2 flex flex-col gap-2">
-                    {item.subItems.map((subItem) => (
-                      <Button
-                        key={subItem.href}
-                        variant="ghost"
-                        className={cn(
-                          "w-full justify-start",
-                          pathname === subItem.href && "bg-accent"
-                        )}
-                        asChild
-                      >
-                        <Link to={subItem.href}>{subItem.title}</Link>
-                      </Button>
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
-              ) : (
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start gap-2",
-                    pathname === item.href && "bg-accent"
-                  )}
-                  asChild
-                >
-                  <Link to={item.href}>
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
-                  </Link>
-                </Button>
-              )}
-            </div>
-          ))}
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            )
+          })}
         </nav>
       </ScrollArea>
       <div className="border-t p-6">

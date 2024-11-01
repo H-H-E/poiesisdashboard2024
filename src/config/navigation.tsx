@@ -10,7 +10,7 @@ export type NavItem = {
 
 export const adminNavItems: NavItem[] = [
   { title: "Dashboard", href: "/", icon: LayoutDashboard },
-  { title: "Users", href: "/users", icon: Users },
+  { title: "Users", href: "/users", icon: Users, adminOnly: true },
   {
     title: "Educational Content",
     href: "/content",
