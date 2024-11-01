@@ -34,12 +34,12 @@ export default function Login() {
     }
   }, [navigate, toast])
 
-  // Prevent keyboard event handling on document with proper type checking
+  // Prevent keyboard event handling on document
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key?.toLowerCase()
-      if (key && ['escape', 'enter'].includes(key)) {
-        e.preventDefault()
+    function handleKeyDown(event: KeyboardEvent) {
+      // Only prevent default for specific keys we want to handle
+      if (event.key === 'Escape' || event.key === 'Enter') {
+        event.preventDefault()
       }
     }
 
