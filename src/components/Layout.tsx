@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Menu } from "lucide-react"
 import { Button } from "./ui/button"
@@ -10,6 +11,8 @@ interface LayoutProps {
 }
 
 export function Layout({ children, className }: LayoutProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sheet>
@@ -24,13 +27,28 @@ export function Layout({ children, className }: LayoutProps) {
         </SheetContent>
       </Sheet>
 
-      <aside className="hidden w-[240px] md:block">
-        <div className="fixed inset-y-0 z-20 w-[240px] border-r bg-background">
-          <SidebarContent />
+      <aside className={cn(
+        "hidden md:block",
+        isCollapsed ? "w-[80px]" : "w-[240px]",
+        "transition-all duration-300"
+      )}>
+        <div className={cn(
+          "fixed inset-y-0 z-20 border-r bg-background",
+          isCollapsed ? "w-[80px]" : "w-[240px]",
+          "transition-all duration-300"
+        )}>
+          <SidebarContent 
+            isCollapsed={isCollapsed} 
+            onToggleCollapse={() => setIsCollapsed(!isCollapsed)} 
+          />
         </div>
       </aside>
 
-      <main className={cn("flex-1", className)}>
+      <main className={cn(
+        "flex-1 transition-all duration-300",
+        isCollapsed ? "md:ml-[80px]" : "md:ml-[240px]",
+        className
+      )}>
         <div className="px-2">
           {children}
         </div>
