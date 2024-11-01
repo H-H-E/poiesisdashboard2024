@@ -2,12 +2,13 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { ChevronDown, LogOut, User } from "lucide-react"
+import { ChevronDown, LogOut, User, ExternalLink } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { adminNavItems, studentNavItems, parentNavItems } from "@/config/navigation"
+import { format } from "date-fns"
 import type { NavItem } from "@/config/navigation"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -62,6 +63,11 @@ export function SidebarContent({ className }: SidebarProps) {
   const handleLogout = async () => {
     await signOut()
     navigate("/login")
+  }
+
+  const handleWhiteboardOpen = () => {
+    const date = format(new Date(), "MMMMdo'yyyy'")
+    window.open(`https://draw.poiesis.education/multiplayer/${date}`, '_blank')
   }
 
   if (isLoading) {
@@ -129,6 +135,16 @@ export function SidebarContent({ className }: SidebarProps) {
               </div>
             )
           })}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 mt-2"
+            onClick={handleWhiteboardOpen}
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span className="text-sm">Today's Whiteboard</span>
+          </Button>
         </div>
       </ScrollArea>
 
