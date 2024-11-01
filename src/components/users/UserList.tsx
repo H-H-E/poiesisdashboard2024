@@ -45,12 +45,14 @@ export function UserList({ onEditUser }: UserListProps) {
   })
 
   const filteredUsers = users?.filter((user) => {
+    const fullName = `${user.first_name || ""} ${user.last_name || ""}`.toLowerCase()
+    const userEmail = (user.email || "").toLowerCase()
+    const searchTerm = search.toLowerCase()
+
     const matchesSearch =
       search === "" ||
-      `${user.first_name || ""} ${user.last_name || ""}`
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      user.email?.toLowerCase().includes(search.toLowerCase())
+      fullName.includes(searchTerm) ||
+      userEmail.includes(searchTerm)
 
     const matchesRole = roleFilter === "all" || user.user_type === roleFilter
 
@@ -93,7 +95,7 @@ export function UserList({ onEditUser }: UserListProps) {
           {filteredUsers?.map((user) => (
             <UserCard
               key={user.id}
-              name={`${user.first_name || ""} ${user.last_name || ""}`}
+              name={`${user.first_name || ""} ${user.last_name || ""}`.trim()}
               role={user.user_type}
               email={user.email || ""}
               phone={user.phone || ""}
