@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { ChevronDown, LogOut, User } from "lucide-react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { adminNavItems, studentNavItems, parentNavItems } from "@/config/navigation"
 import type { NavItem } from "@/config/navigation"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -19,6 +20,7 @@ export function SidebarContent({ className }: SidebarProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [openItem, setOpenItem] = useState<string | null>(null)
   const location = useLocation()
+  const navigate = useNavigate()
   const pathname = location.pathname
 
   useEffect(() => {
