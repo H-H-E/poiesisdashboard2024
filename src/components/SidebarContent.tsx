@@ -80,16 +80,16 @@ export function SidebarContent() {
   }
 
   if (isLoading) {
-    return <div className="p-6">Loading...</div>
+    return <div className="p-4">Loading...</div>
   }
 
   return (
     <div className="flex h-full flex-col">
-      <div className="p-6">
-        <h2 className="text-lg font-semibold tracking-tight">Poiesis</h2>
+      <div className="p-4">
+        <h2 className="text-base font-semibold tracking-tight">Poiesis</h2>
       </div>
-      <ScrollArea className="flex-1 px-4">
-        <nav className="flex flex-col gap-2">
+      <ScrollArea className="flex-1 px-2">
+        <nav className="flex flex-col gap-1">
           {navItems.map((item: NavItem) => {
             if (item.adminOnly && userType !== "admin") {
               return null
@@ -105,20 +105,22 @@ export function SidebarContent() {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-start gap-2"
+                        size="sm"
+                        className="w-full justify-start gap-2 px-2"
                       >
                         <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                        <ChevronDown className="ml-auto h-4 w-4" />
+                        <span className="text-sm">{item.title}</span>
+                        <ChevronDown className="ml-auto h-3 w-3" />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="ml-4 mt-2 flex flex-col gap-2">
+                    <CollapsibleContent className="ml-2 mt-1 flex flex-col gap-1">
                       {item.subItems.map((subItem) => (
                         <Button
                           key={subItem.href}
                           variant="ghost"
+                          size="sm"
                           className={cn(
-                            "w-full justify-start",
+                            "w-full justify-start px-2 text-sm",
                             pathname === subItem.href && "bg-accent"
                           )}
                           asChild
@@ -131,15 +133,16 @@ export function SidebarContent() {
                 ) : (
                   <Button
                     variant="ghost"
+                    size="sm"
                     className={cn(
-                      "w-full justify-start gap-2",
+                      "w-full justify-start gap-2 px-2",
                       pathname === item.href && "bg-accent"
                     )}
                     asChild
                   >
                     <Link to={item.href}>
                       <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                      <span className="text-sm">{item.title}</span>
                     </Link>
                   </Button>
                 )}
@@ -148,18 +151,18 @@ export function SidebarContent() {
           })}
         </nav>
       </ScrollArea>
-      <div className="border-t p-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
+      <div className="border-t p-4">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <User className="h-4 w-4 text-muted-foreground" />
-              <span className="flex-1 text-sm text-muted-foreground">
+              <User className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">
                 {firstName || "User"}
               </span>
             </div>
             <Badge 
               variant={getRoleBadgeVariant(userType)}
-              className="capitalize bg-secondary text-secondary-foreground w-fit"
+              className="capitalize w-fit text-xs"
             >
               {userType}
             </Badge>
@@ -170,7 +173,7 @@ export function SidebarContent() {
               variant="ghost"
               size="icon"
               onClick={handleLogout}
-              className="h-9 w-9"
+              className="h-8 w-8"
             >
               <LogOut className="h-4 w-4" />
               <span className="sr-only">Log out</span>

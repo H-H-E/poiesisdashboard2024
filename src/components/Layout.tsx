@@ -14,21 +14,21 @@ export function Layout({ children, className }: LayoutProps) {
     <div className="flex min-h-screen bg-background">
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-6 w-6" />
+          <Button variant="ghost" size="icon" className="fixed top-4 left-4 md:hidden">
+            <Menu className="h-5 w-5" />
             <span className="sr-only">Open menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] p-0">
+        <SheetContent side="left" className="w-[240px] p-0">
           <SidebarContent />
         </SheetContent>
       </Sheet>
 
-      <aside className="hidden w-[300px] border-r md:block">
+      <aside className="hidden w-[240px] border-r md:block">
         <SidebarContent />
       </aside>
 
-      <main className={cn("flex-1 p-8", className)}>
+      <main className={cn("flex-1 px-4 py-6 md:px-8", className)}>
         {children}
       </main>
     </div>
