@@ -54,7 +54,7 @@ export default function CalendarPage() {
   }, [])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Calendar</h1>
         <Button onClick={() => setIsCalendarOpen(true)}>
