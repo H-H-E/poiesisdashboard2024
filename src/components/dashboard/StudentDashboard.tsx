@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
@@ -7,40 +8,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { ProfileHeader } from "./ProfileHeader"
 import { Badge } from "@/components/ui/badge"
-import { format } from "date-fns"
-
-interface PlenarySession {
-  id: string
-  title: string
-  description: string
-  session_date: string
-  points_awarded: number
-}
-
-interface PathwayProgress {
-  id: string
-  title: string
-  description: string
-  status: string
-}
+import { Button } from "@/components/ui/button"
+import { PlusCircle, List } from "lucide-react"
+import { PlenaryFormModal } from "../plenaries/PlenaryFormModal"
+import { RecentPlenariesModal } from "../plenaries/RecentPlenariesModal"
 
 export function StudentDashboard() {
   const { user } = useAuth()
-
-  const { data: plenaries, isLoading: plenariesLoading, error: plenariesError } = useQuery({
-    queryKey: ['plenaries', user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('plenaries')
-        .select('*')
-        .eq('student_id', user?.id)
-        .order('session_date', { ascending: false })
-        .limit(5)
-      
-      if (error) throw error
-      return data as PlenarySession[]
-    },
-  })
+  const [isPlenaryFormOpen, setIsPlenaryFormOpen] = useState(false)
+  const [isRecentPlenariesOpen, setIsRecentPlenariesOpen] = useState(false)
 
   const { data: points, isLoading: pointsLoading } = useQuery({
     queryKey: ['points', user?.id],
@@ -77,58 +53,34 @@ export function StudentDashboard() {
     },
   })
 
-  if (plenariesError) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
-      </Alert>
-    )
-  }
-
   return (
     <div className="space-y-6">
       <ProfileHeader />
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* Recent Plenaries - Now more prominent */}
+        {/* Plenary Management Card */}
         <Card className="col-span-full lg:col-span-2">
           <CardHeader>
-            <CardTitle>Recent Plenary Sessions</CardTitle>
+            <CardTitle>Plenary Management</CardTitle>
           </CardHeader>
-          <CardContent>
-            {plenariesLoading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-24 w-full" />
-              </div>
-            ) : plenaries && plenaries.length > 0 ? (
-              <div className="space-y-4">
-                {plenaries.map((plenary) => (
-                  <div
-                    key={plenary.id}
-                    className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold">{plenary.title}</h3>
-                        <p className="mt-1 text-sm text-muted-foreground">{plenary.description}</p>
-                        <div className="mt-2 flex items-center gap-2">
-                          <Badge variant="secondary">
-                            {format(new Date(plenary.session_date), 'PPP')}
-                          </Badge>
-                          <Badge variant="default">
-                            {plenary.points_awarded} points
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">No recent plenary sessions found.</p>
-            )}
+          <CardContent className="flex flex-col gap-4 sm:flex-row">
+            <Button 
+              onClick={() => setIsPlenaryFormOpen(true)}
+              className="flex-1"
+              size="lg"
+            >
+              <PlusCircle className="mr-2 h-5 w-5" />
+              Add New Plenary
+            </Button>
+            <Button 
+              onClick={() => setIsRecentPlenariesOpen(true)}
+              className="flex-1"
+              variant="outline"
+              size="lg"
+            >
+              <List className="mr-2 h-5 w-5" />
+              View Recent Plenaries
+            </Button>
           </CardContent>
         </Card>
 
@@ -183,6 +135,15 @@ export function StudentDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <PlenaryFormModal 
+        open={isPlenaryFormOpen} 
+        onOpenChange={setIsPlenaryFormOpen} 
+      />
+      <RecentPlenariesModal
+        open={isRecentPlenariesOpen}
+        onOpenChange={setIsRecentPlenariesOpen}
+      />
     </div>
   )
 }
