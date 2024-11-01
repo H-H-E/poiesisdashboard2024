@@ -124,7 +124,6 @@ export function PathwayExplorer() {
       const isExpanding = !clickedNode.data.isExpanded
       
       if (isExpanding) {
-        // Show child nodes and edges for clicked pathway
         const childNodes = hiddenNodes.filter((hn) => 
           pathwayEdges.some((e) => e.source === clickedNode.id && e.target === hn.id)
         )
@@ -132,14 +131,12 @@ export function PathwayExplorer() {
           e.source === clickedNode.id || childNodes.some((cn) => cn.id === e.source)
         )
         
-        // Remove any existing child nodes/edges from other pathways
         setNodes((nds) => [
           ...nds.filter((n) => initialNodes.some((in_) => in_.id === n.id)),
           ...childNodes
         ])
         setEdges(childEdges)
       } else {
-        // Remove all child nodes and edges
         setNodes((nds) => nds.filter((n) => initialNodes.some((in_) => in_.id === n.id)))
         setEdges([])
       }
@@ -147,7 +144,7 @@ export function PathwayExplorer() {
   }, [setNodes, setEdges])
 
   return (
-    <div className="h-[calc(100vh-4rem)]">
+    <div className="h-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}

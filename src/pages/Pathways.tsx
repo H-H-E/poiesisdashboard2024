@@ -8,11 +8,11 @@ export default function Pathways() {
         <h1 className="text-2xl font-bold">Learning Pathways</h1>
       </div>
 
-      <Card>
+      <Card className="h-[calc(100vh-12rem)]">
         <CardHeader>
           <CardTitle>Pathway Explorer</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 h-[calc(100%-4rem)]">
           <PathwayExplorer />
         </CardContent>
       </Card>
