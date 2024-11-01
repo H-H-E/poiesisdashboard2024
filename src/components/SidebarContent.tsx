@@ -20,6 +20,7 @@ export function SidebarContent() {
   const navigate = useNavigate()
   const [isAdmin, setIsAdmin] = useState(false)
   const [userType, setUserType] = useState<string>('student')
+  const [openItem, setOpenItem] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -47,7 +48,7 @@ export function SidebarContent() {
     navigate('/login')
   }
 
-  const getRoleBadgeVariant = (userType?: string) => {
+  const getRoleBadgeVariant = (userType: string = 'student') => {
     switch (userType) {
       case 'admin':
         return 'default'
@@ -70,7 +71,10 @@ export function SidebarContent() {
           {filteredNavItems.map((item) => (
             <div key={item.href}>
               {item.subItems ? (
-                <Collapsible>
+                <Collapsible
+                  open={openItem === item.href}
+                  onOpenChange={() => setOpenItem(openItem === item.href ? null : item.href)}
+                >
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
@@ -120,7 +124,7 @@ export function SidebarContent() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span className="flex-1">{user?.email}</span>
+            <span className="flex-1">{user?.email || ''}</span>
             <Badge variant={getRoleBadgeVariant(userType)}>
               {userType}
             </Badge>
