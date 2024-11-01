@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { ChevronDown, LogOut, User } from "lucide-react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -19,9 +19,7 @@ export function SidebarContent({ className }: SidebarProps) {
   const [firstName, setFirstName] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
   const [openItem, setOpenItem] = useState<string | null>(null)
-  const location = useLocation()
   const navigate = useNavigate()
-  const pathname = location.pathname
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -86,8 +84,8 @@ export function SidebarContent({ className }: SidebarProps) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="p-3">
-        <h2 className="text-base font-semibold tracking-tight">Poiesis</h2>
+      <div className="p-2">
+        <h2 className="mb-1 px-2 text-lg font-semibold tracking-tight">Poiesis</h2>
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-1 p-2">
@@ -114,16 +112,13 @@ export function SidebarContent({ className }: SidebarProps) {
                         <ChevronDown className="ml-auto h-3 w-3" />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="ml-2 flex flex-col gap-1 py-1">
+                    <CollapsibleContent className="ml-2 flex flex-col gap-1">
                       {item.subItems.map((subItem) => (
                         <Button
                           key={subItem.href}
                           variant="ghost"
                           size="sm"
-                          className={cn(
-                            "h-7 w-full justify-start px-2 text-sm",
-                            pathname === subItem.href && "bg-accent"
-                          )}
+                          className="h-7 w-full justify-start px-2 text-sm"
                           asChild
                         >
                           <Link to={subItem.href}>{subItem.title}</Link>
@@ -135,10 +130,7 @@ export function SidebarContent({ className }: SidebarProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={cn(
-                      "h-8 w-full justify-start gap-2 px-2",
-                      pathname === item.href && "bg-accent"
-                    )}
+                    className="h-8 w-full justify-start gap-2 px-2"
                     asChild
                   >
                     <Link to={item.href}>
@@ -152,7 +144,7 @@ export function SidebarContent({ className }: SidebarProps) {
           })}
         </nav>
       </ScrollArea>
-      <div className="border-t p-3">
+      <div className="border-t p-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-muted-foreground" />
