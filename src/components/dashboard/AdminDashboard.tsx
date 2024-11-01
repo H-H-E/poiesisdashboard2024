@@ -16,11 +16,11 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto p-6 space-y-6">
       <ProfileHeader />
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="md:col-span-2 lg:col-span-1">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
