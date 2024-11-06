@@ -18,6 +18,8 @@ const standardFormSchema = z.object({
   grade_level_end: z.coerce.number().min(0).max(12).optional(),
 })
 
+type StandardFormValues = z.infer<typeof standardFormSchema>
+
 interface StandardFormProps {
   onSuccess?: () => void
 }
@@ -38,19 +40,33 @@ export function StandardForm({ onSuccess }: StandardFormProps) {
     }
   })
 
-  const form = useForm<z.infer<typeof standardFormSchema>>({
+  const form = useForm<StandardFormValues>({
     resolver: zodResolver(standardFormSchema),
+    defaultValues: {
+      code: "",
+      description: "",
+      framework_id: undefined,
+      grade_level_start: undefined,
+      grade_level_end: undefined,
+    }
   })
 
-  const onSubmit = async (data: z.infer<typeof standardFormSchema>) => {
+  const onSubmit = async (values: StandardFormValues) => {
     try {
       const { error } = await supabase
         .from("educational_standards")
-        .insert(data)
+        .insert({
+          code: values.code,
+          description: values.description,
+          framework_id: values.framework_id,
+          grade_level_start: values.grade_level_start,
+          grade_level_end: values.grade_level_end,
+        })
 
       if (error) throw error
 
       toast({ title: "Standard created successfully" })
+      form.reset()
       onSuccess?.()
     } catch (error: any) {
       toast({
