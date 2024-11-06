@@ -9,8 +9,8 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext"
 import Dashboard from "./pages/Dashboard"
 import Pathways from "./pages/Pathways"
 import Projects from "./pages/Projects"
+import Plenaries from "./pages/Plenaries"
 import Users from "./pages/Users"
-import Points from "./pages/Points"
 import Profile from "./pages/Profile"
 import Login from "./pages/Login"
 import Calendar from "./pages/Calendar"
@@ -45,8 +45,8 @@ function App() {
                           <Route index element={<Dashboard />} />
                           <Route path="pathways" element={<Pathways />} />
                           <Route path="projects" element={<Projects />} />
+                          <Route path="plenaries" element={<Plenaries />} />
                           <Route path="users/*" element={<Users />} />
-                          <Route path="points" element={<Points />} />
                           <Route path="profile" element={<Profile />} />
                           <Route path="calendar" element={<Calendar />} />
                         </Routes>

@@ -18,7 +18,7 @@ export const adminNavItems: NavItem[] = [
     subItems: [
       { title: "Pathways", href: "/pathways" },
       { title: "Projects", href: "/projects" },
-      { title: "Points", href: "/points" },
+      { title: "Plenaries", href: "/plenaries" },
     ],
   },
   { title: "Calendar", href: "/calendar", icon: Calendar },
@@ -28,12 +28,11 @@ export const studentNavItems: NavItem[] = [
   { title: "Dashboard", href: "/", icon: Home },
   { title: "My Pathways", href: "/pathways", icon: GraduationCap },
   { title: "My Projects", href: "/projects", icon: Book },
-  { title: "Points", href: "/points", icon: LayoutDashboard },
+  { title: "My Plenaries", href: "/plenaries", icon: LayoutDashboard },
 ]
 
 export const parentNavItems: NavItem[] = [
   { title: "Dashboard", href: "/", icon: Home },
   { title: "Child's Progress", href: "/progress", icon: GraduationCap },
-  { title: "Points", href: "/points", icon: LayoutDashboard },
   { title: "Settings", href: "/settings", icon: Settings },
 ]
