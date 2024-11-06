@@ -35,6 +35,7 @@ export interface Plenary {
   student_id: string | null
   points_awarded: number | null
   session_date: string
+  work_url: string | null
   created_at: string
   updated_at: string
 }
