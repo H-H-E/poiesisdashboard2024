@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard"
 import Pathways from "./pages/Pathways"
 import Projects from "./pages/Projects"
 import Plenaries from "./pages/Plenaries"
+import Standards from "./pages/Standards"
 import Users from "./pages/Users"
 import Profile from "./pages/Profile"
 import Login from "./pages/Login"
@@ -43,6 +44,7 @@ function App() {
                       <Layout>
                         <Routes>
                           <Route index element={<Dashboard />} />
+                          <Route path="standards" element={<Standards />} />
                           <Route path="pathways" element={<Pathways />} />
                           <Route path="projects" element={<Projects />} />
                           <Route path="plenaries" element={<Plenaries />} />

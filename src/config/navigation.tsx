@@ -1,4 +1,4 @@
-import { Book, Calendar, GraduationCap, Home, LayoutDashboard, Settings, Users } from "lucide-react"
+import { Book, Calendar, GraduationCap, Home, LayoutDashboard, Settings, Users, List } from "lucide-react"
 
 export type NavItem = {
   title: string
@@ -16,6 +16,7 @@ export const adminNavItems: NavItem[] = [
     href: "/content",
     icon: Book,
     subItems: [
+      { title: "Standards", href: "/standards" },
       { title: "Pathways", href: "/pathways" },
       { title: "Projects", href: "/projects" },
       { title: "Plenaries", href: "/plenaries" },
