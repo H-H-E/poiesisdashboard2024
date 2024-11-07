@@ -1,19 +1,18 @@
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, TableIcon } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useQuery } from "@tanstack/react-query"
 import { Event } from "@/types"
-import { format } from "date-fns"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/hooks/use-toast"
 import { CalendarModal } from "@/components/calendar/CalendarModal"
+import { EventsTable } from "@/components/calendar/EventsTable"
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const [view, setView] = useState<'table' | 'calendar'>('table')
   const { toast } = useToast()
 
   const { data: events, isLoading } = useQuery({
@@ -22,6 +21,7 @@ export default function CalendarPage() {
       const { data, error } = await supabase
         .from('events')
         .select('*')
+        .gte('start_time', new Date().toISOString())
         .order('start_time', { ascending: true })
 
       if (error) {
@@ -37,7 +37,7 @@ export default function CalendarPage() {
     }
   })
 
-  // Get events for selected date
+  // Get events for selected date (for calendar view)
   const selectedDateEvents = events?.filter(event => {
     const eventDate = new Date(event.start_time)
     return date && 
@@ -57,10 +57,22 @@ export default function CalendarPage() {
     <div className="space-y-4 pt-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Calendar</h1>
-        <Button onClick={() => setIsCalendarOpen(true)}>
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          Select Date
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant={view === 'table' ? 'default' : 'outline'}
+            onClick={() => setView('table')}
+          >
+            <TableIcon className="mr-2 h-4 w-4" />
+            Table View
+          </Button>
+          <Button
+            variant={view === 'calendar' ? 'default' : 'outline'}
+            onClick={() => setIsCalendarOpen(true)}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            Calendar View
+          </Button>
+        </div>
       </div>
 
       <CalendarModal
@@ -71,19 +83,23 @@ export default function CalendarPage() {
         datesWithEvents={datesWithEvents}
       />
       
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            Events for {date ? format(date, 'MMMM d, yyyy') : 'Selected Date'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[500px] pr-4">
-            {isLoading ? (
-              <p>Loading events...</p>
-            ) : selectedDateEvents && selectedDateEvents.length > 0 ? (
-              <div className="space-y-4">
-                {selectedDateEvents.map((event) => (
+      {view === 'table' ? (
+        <Card>
+          <CardContent className="p-6">
+            <EventsTable events={events} isLoading={isLoading} />
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-lg font-semibold mb-4">
+              Events for {date ? format(date, 'MMMM d, yyyy') : 'Selected Date'}
+            </h2>
+            <div className="space-y-4">
+              {isLoading ? (
+                <p>Loading events...</p>
+              ) : selectedDateEvents && selectedDateEvents.length > 0 ? (
+                selectedDateEvents.map((event) => (
                   <div
                     key={event.id}
                     className="flex flex-col space-y-2 p-4 border rounded-lg"
@@ -101,14 +117,14 @@ export default function CalendarPage() {
                       {format(new Date(event.start_time), 'h:mm a')} - {format(new Date(event.end_time), 'h:mm a')}
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">No events for this date</p>
-            )}
-          </ScrollArea>
-        </CardContent>
-      </Card>
+                ))
+              ) : (
+                <p className="text-muted-foreground">No events for this date</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }
