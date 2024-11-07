@@ -7,6 +7,12 @@ import ResetPassword from "@/pages/ResetPassword"
 import Dashboard from "@/pages/Dashboard"
 import Profile from "@/pages/Profile"
 import Users from "@/pages/Users"
+import Projects from "@/pages/Projects"
+import Pathways from "@/pages/Pathways"
+import Points from "@/pages/Points"
+import Standards from "@/pages/Standards"
+import Plenaries from "@/pages/Plenaries"
+import Calendar from "@/pages/Calendar"
 import { AuthProvider } from "@/contexts/AuthContext"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
@@ -21,15 +27,17 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/" element={
-              <Layout>
-                <Routes>
-                  <Route index element={<Dashboard />} />
-                  <Route path="profile" element={<Profile />} />
-                  <Route path="users" element={<Users />} />
-                </Routes>
-              </Layout>
-            } />
+            <Route element={<Layout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/pathways" element={<Pathways />} />
+              <Route path="/points" element={<Points />} />
+              <Route path="/standards" element={<Standards />} />
+              <Route path="/plenaries" element={<Plenaries />} />
+              <Route path="/calendar" element={<Calendar />} />
+            </Route>
           </Routes>
           <Toaster />
         </Router>

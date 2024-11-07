@@ -3,13 +3,13 @@ import { Menu } from "lucide-react"
 import { Button } from "./ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 import { SidebarContent } from "./SidebarContent"
+import { Outlet } from "react-router-dom"
 
 interface LayoutProps {
-  children: React.ReactNode
   className?: string
 }
 
-export default function Layout({ children, className }: LayoutProps) {
+export default function Layout({ className }: LayoutProps) {
   return (
     <div className="flex min-h-screen bg-background">
       <Sheet>
@@ -30,10 +30,8 @@ export default function Layout({ children, className }: LayoutProps) {
         </div>
       </aside>
 
-      <main className={cn("flex-1", className)}>
-        <div className="px-2">
-          {children}
-        </div>
+      <main className={cn("flex-1 p-4 md:p-8", className)}>
+        <Outlet />
       </main>
     </div>
   )
