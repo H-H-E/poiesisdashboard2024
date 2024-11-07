@@ -24,23 +24,32 @@ export function EventsTable({ events, isLoading }: EventsTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Time</TableHead>
+            <TableHead className="w-[120px]">Date</TableHead>
+            <TableHead className="w-[120px]">Time</TableHead>
             <TableHead>Title</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Type</TableHead>
+            <TableHead className="hidden md:table-cell">Description</TableHead>
+            <TableHead className="w-[100px]">Type</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {events && events.length > 0 ? (
             events.map((event) => (
               <TableRow key={event.id}>
-                <TableCell>{format(new Date(event.start_time), 'PPP')}</TableCell>
-                <TableCell>
-                  {format(new Date(event.start_time), 'p')} - {format(new Date(event.end_time), 'p')}
+                <TableCell className="font-medium">
+                  {format(new Date(event.start_time), 'MMM d, yyyy')}
                 </TableCell>
-                <TableCell className="font-medium">{event.title}</TableCell>
-                <TableCell>{event.description}</TableCell>
+                <TableCell>
+                  {format(new Date(event.start_time), 'h:mm a')}
+                </TableCell>
+                <TableCell className="font-medium">
+                  <div className="flex flex-col">
+                    <span>{event.title}</span>
+                    <span className="md:hidden text-sm text-muted-foreground">
+                      {event.description}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">{event.description}</TableCell>
                 <TableCell>
                   <Badge variant={event.event_type === 'online' ? 'default' : 'secondary'}>
                     {event.event_type}
