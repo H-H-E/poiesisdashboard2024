@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { Auth } from "@supabase/auth-ui-react"
 import { ThemeSupa } from "@supabase/auth-ui-shared"
 import { supabase } from "@/integrations/supabase/client"
@@ -40,13 +40,18 @@ export default function Login() {
         <CardHeader>
           <CardTitle className="text-2xl text-center">Welcome to Poiesis</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             providers={[]}
             theme="light"
           />
+          <div className="text-center">
+            <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+              Forgot your password?
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
