@@ -14,7 +14,7 @@ export default function Layout({ className }: LayoutProps) {
     <div className="flex min-h-screen bg-background">
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="fixed top-4 left-4 md:hidden">
+          <Button variant="ghost" size="icon" className="fixed top-4 left-4 md:hidden z-50">
             <Menu className="h-5 w-5" />
             <span className="sr-only">Open menu</span>
           </Button>
@@ -30,7 +30,12 @@ export default function Layout({ className }: LayoutProps) {
         </div>
       </aside>
 
-      <main className={cn("flex-1 p-4 md:p-8", className)}>
+      <main className={cn(
+        "flex-1 px-4 py-4 md:px-8 md:py-8",
+        "max-w-[100vw] md:max-w-none overflow-x-hidden",
+        "md:ml-[240px]",
+        className
+      )}>
         <Outlet />
       </main>
     </div>
