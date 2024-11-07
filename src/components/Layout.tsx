@@ -9,7 +9,7 @@ interface LayoutProps {
   className?: string
 }
 
-export function Layout({ children, className }: LayoutProps) {
+export default function Layout({ children, className }: LayoutProps) {
   return (
     <div className="flex min-h-screen bg-background">
       <Sheet>
