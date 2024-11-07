@@ -21,11 +21,15 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="users" element={<Users />} />
-            </Route>
+            <Route path="/" element={
+              <Layout>
+                <Routes>
+                  <Route index element={<Dashboard />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="users" element={<Users />} />
+                </Routes>
+              </Layout>
+            } />
           </Routes>
           <Toaster />
         </Router>
