@@ -61,21 +61,21 @@ export function ProfileHeader() {
 
   return (
     <Card className="col-span-full">
-      <CardContent className="flex items-center gap-6 py-6">
+      <CardContent className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 py-6">
         <Avatar className="h-16 w-16">
           <AvatarImage src="" alt={`${profile.first_name} ${profile.last_name}`} />
           <AvatarFallback>{getInitials(profile.first_name, profile.last_name)}</AvatarFallback>
         </Avatar>
-        <div className="space-y-1">
+        <div className="space-y-2">
           <h2 className="text-2xl font-bold">
             {profile.first_name} {profile.last_name}
           </h2>
-          <div className="flex items-center gap-2">
-            <Badge className={`${getRoleColor(profile.user_type)} text-white`}>
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <Badge className={`${getRoleColor(profile.user_type)} text-white w-fit`}>
               {profile.user_type.charAt(0).toUpperCase() + profile.user_type.slice(1)}
             </Badge>
             {profile.email && (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground break-all md:break-normal">
                 {profile.email}
               </span>
             )}
