@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 
 const SIDEBAR_WIDTH = "16rem"
@@ -12,8 +11,10 @@ const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
+type SidebarState = "expanded" | "collapsed"
+
 type SidebarContextValue = {
-  state: "expanded" | "collapsed"
+  state: SidebarState
   open: boolean
   setOpen: (open: boolean) => void
   openMobile: boolean
@@ -87,7 +88,7 @@ export function SidebarProvider({
 
   const value = React.useMemo(
     () => ({
-      state: open ? "expanded" : "collapsed",
+      state: open ? "expanded" : "collapsed" as SidebarState,
       open: openProp ?? open,
       setOpen,
       openMobile,
