@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export default function Layout({ className }: LayoutProps) {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="fixed top-4 left-4 md:hidden z-50">
@@ -31,8 +31,8 @@ export default function Layout({ className }: LayoutProps) {
       </aside>
 
       <main className={cn(
-        "flex-1 px-4 py-4 md:px-8 md:py-8",
-        "w-full md:w-[calc(100%-240px)]",
+        "min-h-screen",
+        "px-4 py-4 md:px-8 md:py-8",
         "md:ml-[240px]",
         className
       )}>
