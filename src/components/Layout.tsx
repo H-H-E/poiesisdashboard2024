@@ -32,7 +32,7 @@ export default function Layout({ className }: LayoutProps) {
 
       <main className={cn(
         "flex-1 px-4 py-4 md:px-8 md:py-8",
-        "max-w-[100vw] md:max-w-none overflow-x-hidden",
+        "w-full md:w-[calc(100%-240px)]",
         "md:ml-[240px]",
         className
       )}>
