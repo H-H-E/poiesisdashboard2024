@@ -2,17 +2,16 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { LogOut, User, ExternalLink, Moon, Sun } from "lucide-react"
+import { ChevronDown, LogOut, User, ExternalLink, Moon, Sun } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
 import { useTheme } from "next-themes"
 import { supabase } from "@/integrations/supabase/client"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { adminNavItems, studentNavItems, parentNavItems } from "@/config/navigation"
 import { format } from "date-fns"
+import type { NavItem } from "@/config/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import { useSidebar } from "./ui/sidebar"
-import { cn } from "@/lib/utils"
-import { NavLinks } from "./sidebar/NavLinks"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -22,9 +21,9 @@ export function SidebarContent({ className }: SidebarProps) {
   const [userType, setUserType] = useState<string>("student")
   const [firstName, setFirstName] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
+  const [openItem, setOpenItem] = useState<string | null>(null)
   const navigate = useNavigate()
   const { toast } = useToast()
-  const { isOpen } = useSidebar()
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -41,11 +40,13 @@ export function SidebarContent({ className }: SidebarProps) {
 
         if (error) throw error
 
+        // Check if we got any profiles back
         if (profiles && profiles.length > 0) {
           const profile = profiles[0]
           setUserType(profile.user_type)
           setFirstName(profile.first_name || "")
         } else {
+          // Handle case where no profile is found
           toast({
             title: "Profile not found",
             description: "Your user profile could not be found.",
@@ -102,21 +103,77 @@ export function SidebarContent({ className }: SidebarProps) {
   }
 
   return (
-    <div className={cn(
-      "flex h-full flex-col transition-transform",
-      !isOpen && "-translate-x-full",
-      className
-    )}>
+    <div className="flex h-full flex-col">
       <div className="border-b px-4 py-3">
         <h2 className="text-lg font-semibold">Poiesis</h2>
       </div>
       
       <ScrollArea className="flex-1 px-2">
-        <NavLinks 
-          navItems={navItems} 
-          userType={userType} 
-          onWhiteboardOpen={handleWhiteboardOpen} 
-        />
+        <div className="space-y-1 p-2">
+          {navItems.map((item: NavItem) => {
+            if (item.adminOnly && userType !== "admin") {
+              return null
+            }
+
+            return (
+              <div key={item.href}>
+                {item.subItems ? (
+                  <Collapsible
+                    open={openItem === item.href}
+                    onOpenChange={() => setOpenItem(openItem === item.href ? null : item.href)}
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start gap-2"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span className="text-sm">{item.title}</span>
+                        <ChevronDown className="ml-auto h-3 w-3" />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="ml-4 space-y-1">
+                      {item.subItems.map((subItem) => (
+                        <Button
+                          key={subItem.href}
+                          variant="ghost"
+                          size="sm"
+                          className="w-full justify-start"
+                          asChild
+                        >
+                          <Link to={subItem.href}>{subItem.title}</Link>
+                        </Button>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start gap-2"
+                    asChild
+                  >
+                    <Link to={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            )
+          })}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 mt-2"
+            onClick={handleWhiteboardOpen}
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span className="text-sm">Today's Whiteboard</span>
+          </Button>
+        </div>
       </ScrollArea>
 
       <div className="border-t p-4">
