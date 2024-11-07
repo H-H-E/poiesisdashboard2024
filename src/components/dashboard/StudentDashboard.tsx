@@ -29,6 +29,7 @@ export function StudentDashboard() {
       if (error) throw error
       return data
     },
+    enabled: !!user?.id, // Only run query when we have a user ID
   })
 
   const { data: pathways, isLoading: pathwaysLoading } = useQuery({
@@ -50,6 +51,7 @@ export function StudentDashboard() {
       if (error) throw error
       return data
     },
+    enabled: !!user?.id, // Only run query when we have a user ID
   })
 
   return (

@@ -27,6 +27,7 @@ export function RecentPlenariesModal({ open, onOpenChange }: RecentPlenariesModa
       if (error) throw error
       return data
     },
+    enabled: !!user?.id, // Only run query when we have a user ID
   })
 
   return (
