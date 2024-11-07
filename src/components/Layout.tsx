@@ -1,7 +1,5 @@
 import { cn } from "@/lib/utils"
-import { Menu } from "lucide-react"
-import { Button } from "./ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { SidebarContent } from "./SidebarContent"
 import { Outlet } from "react-router-dom"
 
@@ -11,33 +9,23 @@ interface LayoutProps {
 
 export default function Layout({ className }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="fixed top-4 left-4 md:hidden z-50">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[240px] p-0">
+    <SidebarProvider>
+      <div className="min-h-screen bg-background">
+        <aside className="fixed inset-y-0 z-20 w-[240px] border-r bg-background transition-transform">
           <SidebarContent />
-        </SheetContent>
-      </Sheet>
+        </aside>
 
-      <aside className="hidden w-[240px] md:block">
-        <div className="fixed inset-y-0 z-20 w-[240px] border-r bg-background">
-          <SidebarContent />
-        </div>
-      </aside>
-
-      <main className={cn(
-        "min-h-screen",
-        "px-4 py-4 md:px-8 md:py-8",
-        "md:ml-[240px]",
-        className
-      )}>
-        <Outlet />
-      </main>
-    </div>
+        <main className={cn(
+          "min-h-screen",
+          "px-4 py-4 md:px-8 md:py-8",
+          "md:ml-[240px]",
+          "transition-[margin]",
+          className
+        )}>
+          <SidebarTrigger className="fixed top-4 left-4 z-50" />
+          <Outlet />
+        </main>
+      </div>
+    </SidebarProvider>
   )
 }
