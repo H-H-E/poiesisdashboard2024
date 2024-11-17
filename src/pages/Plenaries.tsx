@@ -21,7 +21,8 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Database } from "@/integrations/supabase/types"
 
-type PlenaryWithPathway = Database['public']['Tables']['plenaries']['Row'] & {
+type Plenary = Database['public']['Tables']['plenaries']['Row']
+type PlenaryWithPathway = Plenary & {
   pathway: {
     title: string | null
   } | null
@@ -40,7 +41,7 @@ export default function Plenaries() {
         .from('plenaries')
         .select(`
           *,
-          pathway (
+          pathway:pathway_id (
             title
           )
         `)
