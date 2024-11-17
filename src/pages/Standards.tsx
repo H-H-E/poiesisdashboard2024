@@ -1,15 +1,17 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, LayoutGrid, Table as TableIcon } from "lucide-react"
 import { StandardCard } from "@/components/standards/StandardCard"
+import { StandardTable } from "@/components/standards/StandardTable"
 import { StandardDetailsModal } from "@/components/standards/StandardDetailsModal"
 import { StandardFormModal } from "@/components/standards/StandardFormModal"
 import { useAuth } from "@/contexts/AuthContext"
 
 export default function Standards() {
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
   const [selectedStandard, setSelectedStandard] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const { user } = useAuth()
@@ -61,15 +63,33 @@ export default function Standards() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Educational Standards</h1>
-        {userProfile?.user_type === "admin" && (
-          <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Standard
+        <div className="flex gap-2">
+          {userProfile?.user_type === "admin" && (
+            <Button onClick={() => setIsFormOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Standard
+            </Button>
+          )}
+          <Button
+            variant={viewMode === 'grid' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('grid')}
+          >
+            <LayoutGrid className="h-4 w-4 mr-2" />
+            Grid View
           </Button>
-        )}
+          <Button
+            variant={viewMode === 'table' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('table')}
+          >
+            <TableIcon className="h-4 w-4 mr-2" />
+            Table View
+          </Button>
+        </div>
       </div>
       
-      <ScrollArea className="h-[80vh] pr-4">
+      {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {standards?.map((standard) => (
             <StandardCard
@@ -79,7 +99,16 @@ export default function Standards() {
             />
           ))}
         </div>
-      </ScrollArea>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Standards List</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <StandardTable standards={standards || []} />
+          </CardContent>
+        </Card>
+      )}
 
       <StandardDetailsModal
         standard={selectedStandard}
