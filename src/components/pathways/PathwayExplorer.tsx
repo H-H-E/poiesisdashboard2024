@@ -20,7 +20,7 @@ import { Book, FileText, Folder, ChevronRight } from 'lucide-react'
 import { Progress } from "@/components/ui/progress"
 
 const PathwayNode = ({ data }) => (
-  <div className={`p-4 rounded-lg shadow-md ${data.color} w-48`}>
+  <div className={`p-4 rounded-lg shadow-md dark:shadow-none ${data.color} dark:bg-opacity-20 dark:backdrop-blur-sm w-48`}>
     <div className="flex items-center justify-between">
       <div className="flex items-center">
         <Book className="w-6 h-6 mr-2" />
@@ -28,12 +28,12 @@ const PathwayNode = ({ data }) => (
       </div>
       <ChevronRight className={`w-6 h-6 transition-transform ${data.isExpanded ? 'rotate-90' : ''}`} />
     </div>
-    <p className="text-sm text-gray-600 mt-2">{data.description}</p>
+    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{data.description}</p>
   </div>
 )
 
 const ProjectNode = ({ data }) => (
-  <div className="bg-orange-100 p-4 rounded-md shadow-md w-48">
+  <div className="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-md shadow-md dark:shadow-none w-48">
     <div className="flex items-center justify-between">
       <div className="flex items-center">
         <Folder className="w-6 h-6 mr-2" />
@@ -41,16 +41,16 @@ const ProjectNode = ({ data }) => (
       </div>
       <ChevronRight className={`w-6 h-6 transition-transform ${data.isExpanded ? 'rotate-90' : ''}`} />
     </div>
-    <p className="text-sm text-gray-600 mt-2">Due: {data.dueDate}</p>
+    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">Due: {data.dueDate}</p>
     <Progress value={data.progress} className="mt-2" />
   </div>
 )
 
 const PlenaryNode = ({ data }) => (
-  <div className="bg-green-100 p-4 rounded-md shadow-md w-48">
+  <div className="bg-green-100 dark:bg-green-900/20 p-4 rounded-md shadow-md dark:shadow-none w-48">
     <FileText className="w-6 h-6 mb-2" />
     <h3 className="text-lg font-semibold">{data.label}</h3>
-    <p className="text-sm text-gray-600">{data.date}</p>
+    <p className="text-sm text-gray-600 dark:text-gray-300">{data.date}</p>
   </div>
 )
 
@@ -154,23 +154,25 @@ export function PathwayExplorer() {
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
         fitView
+        className="dark:bg-background"
       >
-        <Controls />
+        <Controls className="dark:bg-background dark:border dark:border-border" />
         <MiniMap
           nodeColor={(node) => {
             switch (node.type) {
               case 'pathway':
                 return node.data.color.replace('bg-', '')
               case 'project':
-                return 'orange-100'
+                return 'rgb(251, 146, 60)' // orange-400
               case 'plenary':
-                return 'green-100'
+                return 'rgb(34, 197, 94)' // green-500
               default:
                 return '#e2e8f0'
             }
           }}
+          className="dark:bg-background dark:border dark:border-border"
         />
-        <Background color="#aaaaaa" gap={16} />
+        <Background color="#aaaaaa" gap={16} className="dark:opacity-20" />
       </ReactFlow>
     </div>
   )
