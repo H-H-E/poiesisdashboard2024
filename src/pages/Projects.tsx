@@ -19,7 +19,7 @@ export default function Projects() {
         .from('projects')
         .select(`
           *,
-          pathway (
+          pathways!projects_pathway_id_fkey (
             id,
             title
           )
