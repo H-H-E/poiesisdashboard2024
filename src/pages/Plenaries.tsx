@@ -19,10 +19,17 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Database } from "@/integrations/supabase/types"
+
+type PlenaryWithPathway = Database['public']['Tables']['plenaries']['Row'] & {
+  pathway: {
+    title: string | null
+  } | null
+}
 
 export default function Plenaries() {
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
-  const [selectedPlenary, setSelectedPlenary] = useState(null)
+  const [selectedPlenary, setSelectedPlenary] = useState<PlenaryWithPathway | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const { user } = useAuth()
 
@@ -40,7 +47,7 @@ export default function Plenaries() {
         .order('session_date', { ascending: false })
       
       if (error) throw error
-      return data
+      return data as PlenaryWithPathway[]
     }
   })
 
