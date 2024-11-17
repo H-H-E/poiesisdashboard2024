@@ -22,10 +22,9 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Database } from "@/integrations/supabase/types"
 
 type Plenary = Database['public']['Tables']['plenaries']['Row']
+type Pathway = Database['public']['Tables']['pathways']['Row']
 type PlenaryWithPathway = Plenary & {
-  pathway: {
-    title: string | null
-  } | null
+  pathway: Pick<Pathway, 'title'> | null
 }
 
 export default function Plenaries() {
@@ -41,7 +40,7 @@ export default function Plenaries() {
         .from('plenaries')
         .select(`
           *,
-          pathway:pathway_id (
+          pathway:pathways!plenaries_pathway_id_fkey (
             title
           )
         `)
