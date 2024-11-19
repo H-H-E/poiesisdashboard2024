@@ -15,6 +15,7 @@ import ReactFlow, {
   MarkerType,
   Position,
   Panel,
+  BackgroundVariant,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { Book, FileText, Folder, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'
@@ -259,7 +260,7 @@ export function PathwayExplorer() {
           color="#aaaaaa" 
           gap={16} 
           className="dark:opacity-20"
-          variant="dots"
+          variant={BackgroundVariant.Dots}
         />
       </ReactFlow>
     </div>
