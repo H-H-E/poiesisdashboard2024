@@ -3,19 +3,20 @@ import { useAuth } from "@/contexts/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ProfileHeader } from "./ProfileHeader"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, List } from "lucide-react"
+import { PlusCircle, List, TrendingUp, BookOpen } from "lucide-react"
 import { PlenaryFormModal } from "../plenaries/PlenaryFormModal"
 import { RecentPlenariesModal } from "../plenaries/RecentPlenariesModal"
+import { EmptyState } from "../ui/empty-state"
+import { LoadingSpinner } from "../ui/loading-spinner"
 
 export function StudentDashboard() {
-  const { user } = useAuth()
   const [isPlenaryFormOpen, setIsPlenaryFormOpen] = useState(false)
   const [isRecentPlenariesOpen, setIsRecentPlenariesOpen] = useState(false)
+  const { user } = useAuth()
 
   const { data: points, isLoading: pointsLoading } = useQuery({
     queryKey: ['points', user?.id],
@@ -29,7 +30,7 @@ export function StudentDashboard() {
       if (error) throw error
       return data
     },
-    enabled: !!user?.id, // Only run query when we have a user ID
+    enabled: !!user?.id,
   })
 
   const { data: pathways, isLoading: pathwaysLoading } = useQuery({
@@ -51,7 +52,7 @@ export function StudentDashboard() {
       if (error) throw error
       return data
     },
-    enabled: !!user?.id, // Only run query when we have a user ID
+    enabled: !!user?.id,
   })
 
   return (
@@ -94,7 +95,7 @@ export function StudentDashboard() {
           </CardHeader>
           <CardContent>
             {pointsLoading ? (
-              <Skeleton className="h-[200px] w-full" />
+              <LoadingSpinner />
             ) : points && points.length > 0 ? (
               <div className="h-[200px] w-full">
                 <svg
@@ -118,7 +119,11 @@ export function StudentDashboard() {
                 </svg>
               </div>
             ) : (
-              <p className="text-muted-foreground text-center py-8">No points data available</p>
+              <EmptyState
+                icon={TrendingUp}
+                title="No points yet"
+                description="Complete projects and plenaries to earn Poiesis points. They'll appear here as you progress."
+              />
             )}
           </CardContent>
         </Card>
@@ -130,13 +135,10 @@ export function StudentDashboard() {
           </CardHeader>
           <CardContent>
             {pathwaysLoading ? (
-              <div className="space-y-2">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-              </div>
-            ) : (
+              <LoadingSpinner />
+            ) : pathways && pathways.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {pathways?.map((pathway) => (
+                {pathways.map((pathway) => (
                   <Card key={pathway.pathway_id}>
                     <CardHeader>
                       <CardTitle className="text-lg">{pathway.pathways.title}</CardTitle>
@@ -148,6 +150,12 @@ export function StudentDashboard() {
                   </Card>
                 ))}
               </div>
+            ) : (
+              <EmptyState
+                icon={BookOpen}
+                title="No active pathways"
+                description="Join a learning pathway to start tracking your progress and earning points."
+              />
             )}
           </CardContent>
         </Card>
