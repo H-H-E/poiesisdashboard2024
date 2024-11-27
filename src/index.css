@@ -128,4 +128,12 @@
   .nav-link-inactive {
     @apply text-muted-foreground;
   }
+
+  .glass-morphism {
+    @apply bg-background/80 backdrop-blur-sm border border-border/50;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-brand-300;
+  }
 }
