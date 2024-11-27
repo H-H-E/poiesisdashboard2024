@@ -116,7 +116,7 @@
   .card-hover {
     @apply hover:shadow-lg transition-all duration-200 ease-in-out hover:-translate-y-1;
   }
-  
+
   .nav-link {
     @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent;
   }
@@ -130,7 +130,7 @@
   }
 
   .glass-morphism {
-    @apply bg-background/80 backdrop-blur-sm border border-border/50;
+    @apply bg-background/80 backdrop-blur-sm border border-border/50 shadow-sm;
   }
 
   .text-gradient {

@@ -16,6 +16,7 @@ import { Profile } from "@/types"
 import { supabase } from "@/integrations/supabase/client"
 import { ParentStudentManager } from "@/components/users/ParentStudentManager"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@/components/ui/breadcrumb"
 
 export default function Users() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -45,51 +46,64 @@ export default function Users() {
   }, [user?.id])
 
   if (isLoading) {
-    return null // or a loading spinner
+    return null
   }
 
-  // Redirect non-admin users to dashboard
   if (!isAdmin) {
     return <Navigate to="/" replace />
   }
 
   return (
-    <div className="space-y-6 pt-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Users</h1>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add User
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New User</DialogTitle>
-            </DialogHeader>
-            <UserForm
-              onSuccess={() => setIsCreateDialogOpen(false)}
-              onCancel={() => setIsCreateDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
+    <div className="container mx-auto p-6 space-y-6 animate-fade-in">
+      <div className="space-y-2">
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>Users</BreadcrumbItem>
+        </Breadcrumb>
+        
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+            <p className="text-muted-foreground">Manage user accounts and relationships.</p>
+          </div>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="lg" className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add User
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New User</DialogTitle>
+              </DialogHeader>
+              <UserForm
+                onSuccess={() => setIsCreateDialogOpen(false)}
+                onCancel={() => setIsCreateDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      <Tabs defaultValue="users" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="relationships">Parent-Student Links</TabsTrigger>
-        </TabsList>
+      <div className="glass-morphism rounded-lg p-4">
+        <Tabs defaultValue="users" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="relationships">Parent-Student Links</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="users">
-          <UserList onEditUser={setSelectedUser} />
-        </TabsContent>
+          <TabsContent value="users" className="space-y-4">
+            <UserList onEditUser={setSelectedUser} />
+          </TabsContent>
 
-        <TabsContent value="relationships">
-          <ParentStudentManager />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="relationships">
+            <ParentStudentManager />
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {selectedUser && (
         <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(undefined)}>
