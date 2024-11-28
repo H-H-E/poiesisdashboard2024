@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 import { useTheme } from "next-themes"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AlertTriangle } from "lucide-react"
 
 export default function Login() {
   const navigate = useNavigate()
@@ -50,6 +52,13 @@ export default function Login() {
           <CardTitle className="text-2xl text-center">Welcome to Poiesis</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <Alert variant="destructive" className="mb-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              Email authentication is currently disabled. Please contact your administrator to enable it.
+            </AlertDescription>
+          </Alert>
+          
           <Auth
             supabaseClient={supabase}
             appearance={{ 
