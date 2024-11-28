@@ -26,7 +26,7 @@ export default function Login() {
           title: "Signed in successfully",
         })
         navigate('/')
-      } else if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+      } else if (event === 'SIGNED_OUT') {
         toast({
           title: "Signed out",
         })
