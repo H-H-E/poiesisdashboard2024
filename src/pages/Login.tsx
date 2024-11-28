@@ -20,11 +20,18 @@ export default function Login() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth event:", event)
       if (event === 'SIGNED_IN' && session) {
         toast({
           title: "Signed in successfully",
         })
         navigate('/')
+      } else if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+        toast({
+          title: "Signed out",
+        })
+      } else if (event === 'PASSWORD_RECOVERY') {
+        navigate('/reset-password')
       }
     })
 
@@ -43,9 +50,31 @@ export default function Login() {
         <CardContent className="space-y-4">
           <Auth
             supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
+            appearance={{ 
+              theme: ThemeSupa,
+              style: {
+                button: { background: 'rgb(var(--primary))', color: 'white' },
+                anchor: { color: 'rgb(var(--primary))' },
+              },
+            }}
             providers={[]}
             theme="light"
+            localization={{
+              variables: {
+                sign_in: {
+                  email_label: 'Email',
+                  password_label: 'Password',
+                  button_label: 'Sign in',
+                  loading_button_label: 'Signing in...',
+                },
+                sign_up: {
+                  email_label: 'Email',
+                  password_label: 'Password',
+                  button_label: 'Sign up',
+                  loading_button_label: 'Signing up...',
+                },
+              },
+            }}
           />
           <div className="text-center">
             <Link to="/forgot-password" className="text-sm text-primary hover:underline">
