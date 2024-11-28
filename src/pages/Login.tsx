@@ -89,6 +89,7 @@ export default function Login() {
                 },
               },
             }}
+            view="sign_in"
           />
           <div className="text-center">
             <Link to="/forgot-password" className="text-sm text-primary hover:underline">
