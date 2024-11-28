@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Book, GraduationCap, Home, Users, Award, LogOut } from "lucide-react"
+import { Book, GraduationCap, Home, Users, Award, LogOut, Settings } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
@@ -90,6 +90,15 @@ export function Sidebar({ className }: SidebarProps) {
           }>
             <Award className="h-4 w-4" />
             Points
+          </NavLink>
+          <NavLink to="/settings" className={({ isActive }) => 
+            cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+              isActive ? "text-primary bg-accent" : "text-muted-foreground"
+            )
+          }>
+            <Settings className="h-4 w-4" />
+            Settings
           </NavLink>
         </div>
       </div>
