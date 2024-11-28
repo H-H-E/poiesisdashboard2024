@@ -5,10 +5,12 @@ import { ThemeSupa } from "@supabase/auth-ui-shared"
 import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
+import { useTheme } from "next-themes"
 
 export default function Login() {
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { theme } = useTheme()
 
   useEffect(() => {
     // Check if there's an existing session
@@ -55,10 +57,22 @@ export default function Login() {
               style: {
                 button: { background: 'rgb(var(--primary))', color: 'white' },
                 anchor: { color: 'rgb(var(--primary))' },
+                input: {
+                  backgroundColor: 'hsl(var(--background))',
+                  color: 'hsl(var(--foreground))',
+                  borderColor: 'hsl(var(--border))',
+                },
+                label: {
+                  color: 'hsl(var(--foreground))',
+                },
               },
+              className: {
+                input: 'bg-background text-foreground border-input',
+                label: 'text-foreground',
+              }
             }}
             providers={[]}
-            theme="light"
+            theme={theme === 'dark' ? 'dark' : 'light'}
             localization={{
               variables: {
                 sign_in: {
