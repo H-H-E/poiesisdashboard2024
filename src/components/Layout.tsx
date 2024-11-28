@@ -62,7 +62,7 @@ export default function Layout({ className }: LayoutProps) {
         "md:ml-[240px]",
         className
       )}>
-        <Breadcrumb className="mb-6 mt-8 md:mt-0">
+        <Breadcrumb className="mb-6 mt-8 md:mt-0 overflow-x-auto whitespace-nowrap">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/">Home</BreadcrumbLink>
