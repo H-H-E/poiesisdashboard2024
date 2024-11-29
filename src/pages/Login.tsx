@@ -36,6 +36,10 @@ export default function Login() {
         })
       } else if (event === 'PASSWORD_RECOVERY') {
         navigate('/reset-password')
+      } else if (event === 'USER_UPDATED') {
+        toast({
+          title: "Account updated",
+        })
       }
     })
 
@@ -55,7 +59,7 @@ export default function Login() {
           <Alert variant="destructive" className="mb-4">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              Email authentication is currently disabled. Please contact your administrator to enable it.
+              Please make sure you are using the correct email and password. If you haven't registered yet, please sign up first.
             </AlertDescription>
           </Alert>
           
