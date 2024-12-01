@@ -18,8 +18,23 @@ export function StudentDashboard() {
   const [isRecentPlenariesOpen, setIsRecentPlenariesOpen] = useState(false)
   const { user } = useAuth()
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['student-dashboard', user?.id],
+  const { data: points, isLoading: pointsLoading } = useQuery({
+    queryKey: ['points', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('poiesis_points')
+        .select('points, created_at')
+        .eq('student_id', user?.id)
+        .order('created_at', { ascending: true })
+      
+      if (error) throw error
+      return data
+    },
+    enabled: !!user?.id,
+  })
+
+  const { data: pathways, isLoading: pathwaysLoading } = useQuery({
+    queryKey: ['pathways', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('student_pathways')
@@ -30,26 +45,12 @@ export function StudentDashboard() {
             id,
             title,
             description
-          ),
-          poiesis_points!inner (
-            points,
-            created_at
           )
         `)
         .eq('student_id', user?.id)
-        .order('created_at', { foreignTable: 'poiesis_points', ascending: true })
       
       if (error) throw error
-      
-      // Transform the data to match the previous structure
-      const points = data.flatMap(item => item.poiesis_points)
-      const pathways = data.map(({ pathways, pathway_id, status }) => ({
-        pathway_id,
-        status,
-        pathways
-      }))
-      
-      return { points, pathways }
+      return data
     },
     enabled: !!user?.id,
   })
@@ -93,9 +94,9 @@ export function StudentDashboard() {
             <CardTitle>Poiesis Points</CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {pointsLoading ? (
               <LoadingSpinner />
-            ) : data?.points && data.points.length > 0 ? (
+            ) : points && points.length > 0 ? (
               <div className="h-[200px] w-full">
                 <svg
                   className="w-full h-full"
@@ -103,10 +104,10 @@ export function StudentDashboard() {
                   preserveAspectRatio="none"
                 >
                   <path
-                    d={data.points
+                    d={points
                       .map((point, i) => {
-                        const x = (i / (data.points.length - 1)) * 100
-                        const y = 100 - ((point.points / Math.max(...data.points.map(p => p.points))) * 100)
+                        const x = (i / (points.length - 1)) * 100
+                        const y = 100 - ((point.points / Math.max(...points.map(p => p.points))) * 100)
                         return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
                       })
                       .join(' ')}
@@ -133,11 +134,11 @@ export function StudentDashboard() {
             <CardTitle>Active Pathways</CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {pathwaysLoading ? (
               <LoadingSpinner />
-            ) : data?.pathways && data.pathways.length > 0 ? (
+            ) : pathways && pathways.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {data.pathways.map((pathway) => (
+                {pathways.map((pathway) => (
                   <Card key={pathway.pathway_id}>
                     <CardHeader>
                       <CardTitle className="text-lg">{pathway.pathways.title}</CardTitle>
