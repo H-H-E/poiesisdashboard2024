@@ -43,7 +43,7 @@ export function PlenaryDetailsModal({ plenary, open, onOpenChange }: PlenaryDeta
     enabled: !!plenary?.id,
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
     gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
-    keepPreviousData: true // Keep showing previous data while fetching
+    placeholderData: [] // Use empty array as placeholder while loading
   })
 
   if (!plenary) return null

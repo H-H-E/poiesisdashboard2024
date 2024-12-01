@@ -42,7 +42,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
     enabled: !!project?.id,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
-    keepPreviousData: true
+    placeholderData: []
   })
 
   const { data: plenaries } = useQuery({
@@ -61,7 +61,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
     enabled: !!project?.id,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
-    keepPreviousData: true
+    placeholderData: []
   })
 
   if (!project) return null
