@@ -39,7 +39,10 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
       if (error) throw error
       return data?.map(d => d.educational_standards) ?? []
     },
-    enabled: !!project?.id
+    enabled: !!project?.id,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000,
+    keepPreviousData: true
   })
 
   const { data: plenaries } = useQuery({
@@ -50,12 +53,15 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
       const { data, error } = await supabase
         .from("plenaries")
         .select("*")
-        .is("pathway_id", null)  // Changed from eq.null to is.null
+        .is("pathway_id", null)
       
       if (error) throw error
       return data ?? []
     },
-    enabled: !!project?.id
+    enabled: !!project?.id,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000,
+    keepPreviousData: true
   })
 
   if (!project) return null

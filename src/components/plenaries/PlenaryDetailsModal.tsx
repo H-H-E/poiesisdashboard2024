@@ -40,7 +40,10 @@ export function PlenaryDetailsModal({ plenary, open, onOpenChange }: PlenaryDeta
       if (error) throw error
       return data?.map(d => d.educational_standards) ?? []
     },
-    enabled: !!plenary?.id
+    enabled: !!plenary?.id,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    keepPreviousData: true // Keep showing previous data while fetching
   })
 
   if (!plenary) return null
