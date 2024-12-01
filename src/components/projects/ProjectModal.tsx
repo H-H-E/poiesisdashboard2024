@@ -41,7 +41,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
     },
     enabled: !!project?.id,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     keepPreviousData: true
   })
 
@@ -60,7 +60,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
     },
     enabled: !!project?.id,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     keepPreviousData: true
   })
 
