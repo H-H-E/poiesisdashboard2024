@@ -336,7 +336,9 @@ export type Database = {
           created_by: string | null
           description: string | null
           id: string
+          is_template: boolean | null
           position: Json | null
+          template: Json | null
           title: string
           updated_at: string
         }
@@ -346,7 +348,9 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           id?: string
+          is_template?: boolean | null
           position?: Json | null
+          template?: Json | null
           title: string
           updated_at?: string
         }
@@ -356,7 +360,9 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           id?: string
+          is_template?: boolean | null
           position?: Json | null
+          template?: Json | null
           title?: string
           updated_at?: string
         }
